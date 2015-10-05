@@ -1,0 +1,75 @@
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <iostream>
+
+#include "ImageKeeper.h"
+#include "Drawer.h"
+#include "FeaturePoint.h"
+#include "Reader.h"
+#include "LineReader.h"
+#include "FeatureViewer.h"
+
+#define LGH 5
+
+
+#define NVM "./passage6_1980_f30_dist/nvm/passage6_param.nvm"
+#define IMG "./passage6_1980_f30_dist/"
+
+void checkCommand(int* output,int key){
+
+	if(key == 2555904){
+	}else if(key == 2424832){
+		*output -=2;
+	}else{
+		*output -= 1;
+	}
+
+}
+
+int main(){
+
+	int numpic;
+
+	std::string nvmpath = NVM;
+	std::string imgpath = IMG;
+
+	Reader reader(IMG,NVM);
+	Drawer drawer;
+
+	LineReader lr(NVM);
+
+	lr.setLineNo();
+	lr.showLines();
+
+	reader.setImg(lr.startImg[0],lr.endImg[0]);
+	reader.setFeaturePoint(lr.startFeature[0],lr.endFeature[0]);
+	reader.setImg(lr.startImg[1],lr.endImg[1]);
+	reader.setFeaturePoint(lr.startFeature[1],lr.endFeature[1]);
+
+	for(int i=0;i<reader.ik.size();i++){
+		ImageKeeper hoge = reader.getIKbyID(i);
+		if(hoge.getID() != -1){
+			drawer.DrawPoints(hoge);
+		}
+	}
+
+	for(int i=LGH;i<reader.ik.size();i++){
+		cv::vector<ImageKeeper> hoge;
+		for(int j=0;j<LGH;j++){
+			hoge.push_back(reader.getIKbyID(i-j));
+		}
+
+		drawer.DrawRoute(hoge.begin(),hoge.end(),reader.getIKbyID(i).getIMG());
+	}
+
+	cv::namedWindow("hoge",CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
+
+	for(int i=0;i<reader.ik.size();i++){
+		ImageKeeper hoge = reader.getIKbyID(i);
+		if(hoge.getID() != -1){
+			std::cout << "ID:" << reader.getIKIndexbyID(i) << " Name:" << hoge.getName() << std::endl;
+			cv::imshow("hoge",hoge.getIMG());
+			checkCommand(&i,cv::waitKey(0));
+		}
+	}
+}
