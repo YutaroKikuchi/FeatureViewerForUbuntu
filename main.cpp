@@ -46,28 +46,24 @@ int main(){
 	reader.setImg(lr.startImg[1],lr.endImg[1]);
 	reader.setFeaturePoint(lr.startFeature[1],lr.endFeature[1]);
 
-	for(int i=0;i<reader.ik.size();i++){
-		ImageKeeper hoge = reader.getIKbyID(i);
-		if(hoge.getID() != -1){
-			drawer.DrawPoints(hoge);
-		}
-	}
-
 	cv::namedWindow("hoge",CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
 
 	for(int i=LGH;i<reader.ik.size();i++){
 		ImageKeeper shownImg = reader.getIKbyID(i);
+
 		cv::vector<ImageKeeper> hoge;
 
 		if(shownImg.getID() != -1){
+			drawer.DrawPoints(shownImg);
+
 			for(int j=0;j<LGH;j++){
 				hoge.push_back(reader.getIKbyID(i-j));
 			}
 			drawer.DrawRoute(hoge.begin(),hoge.end(),reader.getIKbyID(i).getIMG());
 			
 
-			std::cout << "ID:" << shownImg.getID() << " Name:" << shownImg.getName() << std::endl;
-			cv::imshow("hoge",shownImg.getID());
+			std::cout << "ID:" << reader.getIKIndexbyID(i) << " Name:" << shownImg.getName() << std::endl;
+			cv::imshow("hoge",shownImg.getIMG());
 			checkCommand(&i,cv::waitKey(0));
 		}
 	}
