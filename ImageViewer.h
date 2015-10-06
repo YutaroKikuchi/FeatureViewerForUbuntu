@@ -17,17 +17,18 @@ public:
 		numCam = numcam;
 	}
 
+	int setWindow(){
+		cv::namedWindow("hoge",CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
+	}
+
 	int showImgsbyLine(cv::vector<ImageKeeper>::iterator begin,cv::vector<ImageKeeper>::iterator end){
 
 		cv::Mat output(cv::Size(begin[0].getIMG().cols*numCam,begin[0].getIMG().rows),CV_8UC3);
 
 		combineImgbyLine(begin,end,output);
 
-		cv::namedWindow("hoge",CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
-
 		cv::imshow("hoge",output);
 
-		cv::waitKey(0);
 		return 0;
 	}
 
@@ -36,8 +37,6 @@ public:
 		cv::Mat output(cv::Size(begin[0].getIMG().cols*3,begin[0].getIMG().rows*(int)(numCam/3)),CV_8UC3);
 
 		combineImgbyRect(begin,end,output);
-
-		cv::namedWindow("hoge",CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
 
 		cv::imshow("hoge",output);
 

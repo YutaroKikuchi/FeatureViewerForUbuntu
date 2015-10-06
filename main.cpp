@@ -8,12 +8,14 @@
 #include "Reader.h"
 #include "LineReader.h"
 #include "FeatureViewer.h"
+#include "ImageViewer.h"
 
 #define LGH 5
 
 
 #define NVM "./passage6_1980_f30_dist/nvm/passage6_param.nvm"
 #define IMG "./passage6_1980_f30_dist/"
+
 
 void checkCommand(int* output,int key){
 
@@ -33,6 +35,8 @@ int main(){
 	std::string nvmpath = NVM;
 	std::string imgpath = IMG;
 
+
+	ImageViewer imgv(2);
 	Reader reader(IMG,NVM);
 	Drawer drawer;
 
@@ -61,9 +65,15 @@ int main(){
 			}
 			drawer.DrawRoute(hoge.begin(),hoge.end(),reader.getIKbyID(i).getIMG());
 			
+			cv::vector<ImageKeeper> viewed;
+
+			for(int k=0;k<2;k++){
+				viewed.push_back(reader.getIKbyID(i));
+			}
+
+			imgv.showImgsbyLine(viewed.begin(),viewed.end());
 
 			std::cout << "ID:" << reader.getIKIndexbyID(i) << " Name:" << shownImg.getName() << std::endl;
-			cv::imshow("hoge",shownImg.getIMG());
 			checkCommand(&i,cv::waitKey(0));
 		}
 	}
