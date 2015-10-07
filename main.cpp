@@ -19,13 +19,21 @@
 
 void checkCommand(int* output,int key){
 
-	if(key == 2555904){
+	if(key == 2555904 || key == -1){
 	}else if(key == 2424832){
 		*output -=2;
 	}else{
 		*output -= 1;
 	}
+}
 
+int makeImageKeeper(int id,int x,int y,ImageKeeper out){
+
+	ImageKeeper ik;
+	ik.setFeature(id,x,y);
+	out = ik;
+
+	return 0;
 }
 
 int main(){
@@ -74,7 +82,7 @@ int main(){
 			imgv.showImgsbyLine(viewed.begin(),viewed.end());
 
 			std::cout << "ID:" << reader.getIKIndexbyID(i) << " Name:" << shownImg.getName() << std::endl;
-			checkCommand(&i,cv::waitKey(0));
+			checkCommand(&i,cv::waitKey(100));
 		}
 	}
 }
