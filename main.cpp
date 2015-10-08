@@ -10,7 +10,8 @@
 #include "FeatureViewer.h"
 #include "ImageViewer.h"
 
-#define LGH 5
+#define LGH 4
+#define CAM 2
 
 
 #define NVM "./passage6_1980_f30_dist/nvm/passage6_param.nvm"
@@ -36,6 +37,119 @@ int makeImageKeeper(int id,int x,int y,ImageKeeper out){
 	return 0;
 }
 
+
+int main(){
+
+	Drawer drawer;
+	ImageViewer imgviewer(CAM);
+
+	cv::vector<ImageKeeper> cam1,cam2;
+	int x = 30,y=30,length1 = 200, length2 =190;
+
+	for(int i=0;i<15;i++){
+		ImageKeeper buff,buff2;
+		buff.setIMG(cv::Mat::zeros(256,256,CV_8UC3));
+		buff2.setIMG(cv::Mat::zeros(256,256,CV_8UC3));
+		buff2.setID(i);
+		buff.setID(i);
+		cam2.push_back(buff2);
+
+		switch(i%4){
+		case 0:
+			y+=length1;
+			break;
+		case 1:
+			x+=length1;
+			length1 = length1*(1-0.03*((i+3)/4));
+			break;
+		case 2:
+			y-=length2;
+			break;
+		case 3:
+			x-=length2;
+			length2 = length2*(1-0.03*((i+1)/4));
+			break;
+		default:
+			break;
+		}
+
+		buff.setFeature(1,(float)x,(float)y);
+
+		cam1.push_back(buff);
+	}
+
+	for(int i=15;i<30;i++){
+		ImageKeeper buff,buff2;
+		buff.setIMG(cv::Mat::zeros(256,256,CV_8UC3));
+		buff2.setIMG(cv::Mat::zeros(256,256,CV_8UC3));
+		buff.setID(i);
+		buff2.setID(i);
+		cam1.push_back(buff2);
+
+		switch(i%4){
+		case 0:
+			y+=length1;
+			break;
+		case 1:
+			x+=length1;
+			length1 = length1*(1-0.03*((i+3)/4));
+			break;
+		case 2:
+			y-=length2;
+			break;
+		case 3:
+			x-=length2;
+			length2 = length2*(1-0.03*((i+1)/4));
+			break;
+		default:
+			break;
+		}
+
+		buff.setFeature(1,x,y);
+
+		cam2.push_back(buff);
+	}
+
+	for(int i=0;i<30;i++){
+		
+	}
+
+	cv::namedWindow("hoge",CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
+
+	for(int i=LGH;i<30;i++){
+		ImageKeeper shownImg1 = cam1[i],shownImg2 = cam2[i];
+
+		drawer.DrawPoints(shownImg1);
+		drawer.DrawPoints(shownImg2);
+
+		cv::vector<ImageKeeper> drawn1;
+		cv::vector<ImageKeeper> drawn2;
+
+		for(int j=0;j<LGH;j++){
+			drawn1.push_back(cam1[i-j]);
+			drawn2.push_back(cam2[i-j]);
+		}
+
+		std::cout << "cam1[" << i << "]" << std::endl;
+		cam1[i].showFeatures();
+		std::cout << "cam2[" << i << "]" << std::endl;
+		cam2[i].showFeatures();
+		std::cout << "-----------------------------" << std::endl;
+
+		drawer.DrawRoute(drawn1.begin(),drawn1.end(),cam1[i].getIMG());
+		drawer.DrawRoute(drawn2.begin(),drawn2.end(),cam2[i].getIMG());
+
+		cv::vector<ImageKeeper> viewed;
+		viewed.push_back(cam1[i]);
+		viewed.push_back(cam2[i]);
+
+		imgviewer.showImgsbyLine(viewed.begin(),viewed.end());
+
+		cv::waitKey(0);		
+	}
+}
+
+/*
 int main(){
 
 	int numpic;
@@ -44,7 +158,7 @@ int main(){
 	std::string imgpath = IMG;
 
 
-	ImageViewer imgv(2);
+	ImageViewer imgv(12);
 	Reader reader(IMG,NVM);
 	Drawer drawer;
 
@@ -75,14 +189,16 @@ int main(){
 			
 			cv::vector<ImageKeeper> viewed;
 
-			for(int k=0;k<2;k++){
+			for(int k=0;k<12;k++){
 				viewed.push_back(reader.getIKbyID(i));
 			}
 
-			imgv.showImgsbyLine(viewed.begin(),viewed.end());
+			imgv.showImgsbyRect(viewed.begin(),viewed.end());
 
 			std::cout << "ID:" << reader.getIKIndexbyID(i) << " Name:" << shownImg.getName() << std::endl;
 			checkCommand(&i,cv::waitKey(100));
 		}
 	}
-}
+
+	return 0;
+}*/

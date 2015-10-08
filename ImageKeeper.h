@@ -67,7 +67,7 @@ public:
 		p.point.x = x;
 		p.point.y = y;
 
-		p.fixPoint(rows,cols);
+		//p.fixPoint(rows,cols);
 
 		points.push_back(p);
 	}
