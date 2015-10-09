@@ -110,9 +110,6 @@ int main(){
 		cam2.push_back(buff);
 	}
 
-	for(int i=0;i<30;i++){
-		
-	}
 
 	cv::namedWindow("hoge",CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
 

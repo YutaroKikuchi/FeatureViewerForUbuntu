@@ -32,6 +32,8 @@ public:
 
 		combineImgbyLine(begin,end,output);
 
+		DrawLinesinLine(begin,end,output);
+
 		cv::imshow("hoge",output);
 
 		return 0;
@@ -42,6 +44,8 @@ public:
 		cv::Mat output(cv::Size(begin[0].getIMG().cols*3,begin[0].getIMG().rows*(int)(numCam/3)),CV_8UC3);
 
 		combineImgbyRect(begin,end,output);
+
+
 
 		cv::imshow("hoge",output);
 
@@ -100,6 +104,8 @@ int ImageViewer::DrawLinesinLine(cv::vector<ImageKeeper>::iterator begin,cv::vec
 			
 			cv::vector<cv::Point2f> frompoints,topoints;
 			matchPoint(begin[i],begin[j],frompoints,topoints);
+
+			std::cout << "begin[" << i << "]  " << "begin[" << j << "]" << std::endl;
 
 			for(int k=0;k<frompoints.size();k++){
 				cv::Point2f from = frompoints[k]+cv::Point2f(col*(i-1),0.0);
