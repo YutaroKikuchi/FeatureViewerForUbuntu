@@ -7,11 +7,16 @@
 #include <fstream>
 #include "ImageKeeper.h"
 
+
 class ImageViewer{
 private:
 	int numCam;
 	int combineImgbyLine(cv::vector<ImageKeeper>::iterator begin,cv::vector<ImageKeeper>::iterator end,cv::Mat out);
 	int combineImgbyRect(cv::vector<ImageKeeper>::iterator begin,cv::vector<ImageKeeper>::iterator end,cv::Mat out);
+	int DrawLine(cv::vector<ImageKeeper>::iterator begin,cv::vector<ImageKeeper>::iterator end,cv::Mat out);
+	int DrawLinesinLine(cv::vector<ImageKeeper>::iterator begin,cv::vector<ImageKeeper>::iterator end,cv::Mat out);
+	int matchPoint(ImageKeeper from,ImageKeeper to,cv::vector<cv::Point2f> &frompoints,cv::vector<cv::Point2f> &topoints);
+
 public:
 	ImageViewer(int numcam){
 		numCam = numcam;
@@ -83,5 +88,43 @@ int ImageViewer::combineImgbyRect(cv::vector<ImageKeeper>::iterator begin,cv::ve
 		cv::Mat roi(out,rect);
 		begin[i].getIMG().copyTo(roi);		
 	}
+}
+
+int ImageViewer::DrawLinesinLine(cv::vector<ImageKeeper>::iterator begin,cv::vector<ImageKeeper>::iterator end,cv::Mat out){
+
+	float col = (float)begin[0].getCols(); float row = (float)begin[0].getRows();
+
+	for(int i=0;i<end-begin;i++){
+
+		for(int j=i+1;j<end-begin;j++){
+			
+			cv::vector<cv::Point2f> frompoints,topoints;
+			matchPoint(begin[i],begin[j],frompoints,topoints);
+
+			for(int k=0;k<frompoints.size();k++){
+				cv::Point2f from = frompoints[k]+cv::Point2f(col*(i-1),0.0);
+				cv::Point2f to = topoints[k]+cv::Point2f(col*(j-1),0.0);
+
+				cv::line(out,from,to,cv::Scalar(0.0,0.0,200.0),2,8);
+			}
+		}
+
+	}
+	return 0;
+}
+
+int ImageViewer::matchPoint(ImageKeeper from,ImageKeeper to,cv::vector<cv::Point2f> &frompoints,cv::vector<cv::Point2f> &topoints){
+
+	for(int i=0;i<from.getPointsSize();i++){
+		int fromFID = from.getFeatureID(i);
+		cv::Point2f point = to.getPointID(fromFID);
+
+		if(point != cv::Point2f(0.0,0.0)){
+			frompoints.push_back(from.getPointID(fromFID));
+			topoints.push_back(point);
+		}
+	}
+
+	return 0;
 }
 #endif
