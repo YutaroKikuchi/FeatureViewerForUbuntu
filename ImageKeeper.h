@@ -131,6 +131,14 @@ public:
 	void setFeatureIndex(int i,int input){
 		points[i].FeatureIndex = input;
 	}
+
+	int getCols(){
+		return cols;
+	}
+
+	int getRows(){
+		return rows;
+	}
 };
 
 #endif
