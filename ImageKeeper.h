@@ -21,7 +21,7 @@ private:
 	int ID;
 	int symID;
 	std::string name;
-	cv::vector<Feature> points;
+	std::vector<Feature> points;
 	int rows,cols;
 
 public:
@@ -115,7 +115,7 @@ public:
 	}
 
 	void showFeatures(){
-		cv::vector<Feature>::iterator it = points.begin();
+		std::vector<Feature>::iterator it = points.begin();
 
 		for(int i=0;i<points.size();i++){
 			std::cout << "FID;" << points[i].FID << " x:" << points[i].point.x << " y:" << points[i].point.y << std::endl; 

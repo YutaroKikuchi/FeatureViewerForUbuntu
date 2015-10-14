@@ -33,7 +33,7 @@ int main(){
 	std::string nvmpath = NVM;
 	std::string imgpath = IMG;
 
-	Reader reader(IMG,NVM);
+	Reader reader(imgpath,nvmpath);
 	Drawer drawer;
 
 	LineReader lr(NVM);
