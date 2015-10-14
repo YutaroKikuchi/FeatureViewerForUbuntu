@@ -15,10 +15,10 @@
 #define NVM "./passage6_1980_f30_dist/nvm/passage6_param.nvm"
 #define IMG "./passage6_1980_f30_dist/"
 
-void checkCommand(int* output,int key){
+void checkCommand(int* output,char key){
 
-	if(key == 2555904){
-	}else if(key == 2424832){
+	if(key == 'n'){
+	}else if(key == 'p'){
 		*output -=2;
 	}else{
 		*output -= 1;
@@ -51,7 +51,7 @@ int main(){
 	for(int i=LGH;i<reader.ik.size();i++){
 		ImageKeeper shownImg = reader.getIKbyID(i);
 
-		cv::vector<ImageKeeper> hoge;
+		std::vector<ImageKeeper> hoge;
 
 		if(shownImg.getID() != -1){
 			drawer.DrawPoints(shownImg);
@@ -64,7 +64,7 @@ int main(){
 
 			std::cout << "ID:" << reader.getIKIndexbyID(i) << " Name:" << shownImg.getName() << std::endl;
 			cv::imshow("hoge",shownImg.getIMG());
-			checkCommand(&i,cv::waitKey(0));
+			checkCommand(&i,(char)cv::waitKey(0));
 		}
 	}
 }
