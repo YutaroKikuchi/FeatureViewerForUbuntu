@@ -241,7 +241,7 @@ public:
 
 		getnumofImage(in," ");
 
-		cv::vector<std::string>::iterator it = FeatureData.begin();
+		std::vector<std::string>::iterator it = FeatureData.begin();
 
 		for(;it!=FeatureData.end();++it){
 			std::cout << *it << std::endl;
