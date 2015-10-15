@@ -7,7 +7,7 @@
 class FeaturePoint{
 private:
 	unsigned int ID;
-	cv::vector<int> imgID;
+	std::vector<int> imgID;
 public:
 
 	FeaturePoint(unsigned int id){
@@ -50,7 +50,7 @@ public:
 
 		std::cout << "ID:" << ID <<std::endl;
 
-		cv::vector<int>::iterator it = imgID.begin();
+		std::vector<int>::iterator it = imgID.begin();
 
 		for(;it!=imgID.end();++it){
 			std::cout << " imgID:" << *it;

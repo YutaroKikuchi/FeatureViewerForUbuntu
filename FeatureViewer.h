@@ -49,7 +49,7 @@ public:
 		}
 
 		for(int i=5;i<numpic;i++){
-			cv::vector<ImageKeeper> iks;
+			std::vector<ImageKeeper> iks;
 			for(int j=0;j<LGH;j++){
 				iks.reserve(LGH);
 				iks.push_back(reader.getIKbyID(reader.imgLink[i-j]));

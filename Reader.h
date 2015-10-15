@@ -5,6 +5,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <iostream>
 #include <fstream>
+#include <string>
 #include "./ImageKeeper.h"
 #include "./FeaturePoint.h"
 
@@ -24,15 +25,15 @@ private:
 	bool isEnd(int size,int presize);
 	void getPoints();
 	void getnumofImage(std::string in, std::string delim);
-	cv::vector<std::string> FeatureData;
+	std::vector<std::string> FeatureData;
 	int getImgNum(std::string in);
 public:
-	cv::vector<ImageKeeper> ik;
-	cv::vector<FeaturePoint> featurePoints;
+	std::vector<ImageKeeper> ik;
+	std::vector<FeaturePoint> featurePoints;
 	int startImg,endImg,startFeature,endFeature;
-	cv::vector<int> imgLink;
+	std::vector<int> imgLink;
 
-	cv::vector<int> featureindex;
+	std::vector<int> featureindex;
 
 	Reader(){}
 
@@ -50,7 +51,7 @@ public:
 		//ik.reserve(endline-startline+1);
 		//imgLink.reserve(endline-startline+1);
 
-		std::ifstream ifs(nvmpass);
+	  std::ifstream ifs(nvmpass.c_str());
 		std::string buff;
 		ImageKeeper imbuff;
 
@@ -111,7 +112,7 @@ public:
 	}
 
 	void setLineNo(){
-		std::ifstream ifs(nvmpass);
+	  std::ifstream ifs(nvmpass.c_str());
 		std::string buff;
 
 		if(ifs.fail()){
@@ -145,7 +146,7 @@ public:
 
 		//featurePoints.reserve(endline-startline+1);
 
-		std::ifstream ifs(nvmpass);
+	  std::ifstream ifs(nvmpass.c_str());
 		std::string buff;
 
 		std::cout << "setting FeaturePoints";
@@ -240,7 +241,7 @@ public:
 
 		getnumofImage(in," ");
 
-		cv::vector<std::string>::iterator it = FeatureData.begin();
+		std::vector<std::string>::iterator it = FeatureData.begin();
 
 		for(;it!=FeatureData.end();++it){
 			std::cout << *it << std::endl;

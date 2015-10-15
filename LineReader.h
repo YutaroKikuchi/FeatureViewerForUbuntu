@@ -13,38 +13,49 @@ private:
 	bool isEnd(int size,int presize);
 
 public:
-	cv::vector<int> startImg,endImg,startFeature,endFeature;
+	std::vector<int> startImg,endImg,startFeature,endFeature;
 
 	LineReader(std::string in){
 		nvmpath = in;
 	}
 
-
 	void setLineNo(){
-		std::ifstream ifs(nvmpath);
+
+	  std::ifstream ifs(nvmpath.c_str());
 		std::string buff;
 
+		std::cout << "hogehoge" << std::endl;
+
 		if(ifs.fail()){
+		  std::cout << "file is failed" << std::endl;
 		}else{
 			int currentline = 0,presize,size;
 			int areano = 0;
 
 			while(std::getline(ifs,buff)){
+	    
+			
 				currentline++;
 				size = (int)buff.size();
+				size--;
 
 				if(buff=="0"){
 					break;
 				}else if((currentline == 1)||(currentline == 2)){
+
 				}else if((isStart(size,presize)==true) && (isEnd(size,presize)==true)){
 				}else if((isStart(size,presize)==true) && !(isEnd(size,presize)==true) && (areano==0)){
+				  std::cout << "startImg set" << std::endl;
 					startImg.push_back(currentline+1);
 				}else if(!(isStart(size,presize)==true) && (isEnd(size,presize)==true) && (areano==0)){
+				  std::cout << "endImg set" << std::endl;
 					endImg.push_back(currentline-1);
 					areano = 1;
 				}else if((isStart(size,presize)==true) && !(isEnd(size,presize)==true) && (areano==1)){
+				  std::cout << "startFeature set" << std::endl;
 					startFeature.push_back(currentline+1);
 				}else if(!(isStart(size,presize)==true) && (isEnd(size,presize)==true) && (areano==1)){
+				  std::cout << "endFeature set" << std::endl;
 					endFeature.push_back(currentline-1);
 					areano = 0;
 				}
@@ -80,6 +91,7 @@ public:
 
 bool LineReader::isStart(int size,int presize){
 	if(size!=0 && presize==0){
+	  std::cout << "hoge" << std::endl;
 		return true;
 	}else{
 		return false;
@@ -87,6 +99,7 @@ bool LineReader::isStart(int size,int presize){
 }
 bool LineReader::isEnd(int size,int presize){
 	if(size==0 && presize!=0){
+	  std::cout << "hoge" << std::endl;
 		return true;
 	}else{
 		return false;

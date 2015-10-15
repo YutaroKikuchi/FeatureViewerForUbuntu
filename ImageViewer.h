@@ -11,11 +11,11 @@
 class ImageViewer{
 private:
 	int numCam;
-	int combineImgbyLine(cv::vector<ImageKeeper>::iterator begin,cv::vector<ImageKeeper>::iterator end,cv::Mat out);
-	int combineImgbyRect(cv::vector<ImageKeeper>::iterator begin,cv::vector<ImageKeeper>::iterator end,cv::Mat out);
-	int DrawLine(cv::vector<ImageKeeper>::iterator begin,cv::vector<ImageKeeper>::iterator end,cv::Mat out);
-	int DrawLinesinLine(cv::vector<ImageKeeper>::iterator begin,cv::vector<ImageKeeper>::iterator end,cv::Mat out);
-	int matchPoint(ImageKeeper from,ImageKeeper to,cv::vector<cv::Point2f> &frompoints,cv::vector<cv::Point2f> &topoints);
+	int combineImgbyLine(std::vector<ImageKeeper>::iterator begin,std::vector<ImageKeeper>::iterator end,cv::Mat out);
+	int combineImgbyRect(std::vector<ImageKeeper>::iterator begin,std::vector<ImageKeeper>::iterator end,cv::Mat out);
+	int DrawLine(std::vector<ImageKeeper>::iterator begin,std::vector<ImageKeeper>::iterator end,cv::Mat out);
+	int DrawLinesinLine(std::vector<ImageKeeper>::iterator begin,std::vector<ImageKeeper>::iterator end,cv::Mat out);
+	int matchPoint(ImageKeeper from,ImageKeeper to,std::vector<cv::Point2f> &frompoints,std::vector<cv::Point2f> &topoints);
 
 public:
 	ImageViewer(int numcam){
@@ -26,7 +26,7 @@ public:
 		cv::namedWindow("hoge",CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
 	}
 
-	int showImgsbyLine(cv::vector<ImageKeeper>::iterator begin,cv::vector<ImageKeeper>::iterator end){
+	int showImgsbyLine(std::vector<ImageKeeper>::iterator begin,std::vector<ImageKeeper>::iterator end){
 
 		cv::Mat output(cv::Size(begin[0].getIMG().cols*numCam,begin[0].getIMG().rows),CV_8UC3);
 
@@ -39,7 +39,7 @@ public:
 		return 0;
 	}
 
-	int showImgsbyRect(cv::vector<ImageKeeper>::iterator begin,cv::vector<ImageKeeper>::iterator end){
+	int showImgsbyRect(std::vector<ImageKeeper>::iterator begin,std::vector<ImageKeeper>::iterator end){
 
 		cv::Mat output(cv::Size(begin[0].getIMG().cols*3,begin[0].getIMG().rows*(int)(numCam/3)),CV_8UC3);
 
@@ -55,7 +55,7 @@ public:
 
 };
 
-int ImageViewer::combineImgbyLine(cv::vector<ImageKeeper>::iterator begin,cv::vector<ImageKeeper>::iterator end,cv::Mat out){
+int ImageViewer::combineImgbyLine(std::vector<ImageKeeper>::iterator begin,std::vector<ImageKeeper>::iterator end,cv::Mat out){
 		
 	if(end - begin !=numCam)
 		return -1;
@@ -75,7 +75,7 @@ int ImageViewer::combineImgbyLine(cv::vector<ImageKeeper>::iterator begin,cv::ve
 	return 0;
 }
 
-int ImageViewer::combineImgbyRect(cv::vector<ImageKeeper>::iterator begin,cv::vector<ImageKeeper>::iterator end,cv::Mat out){
+int ImageViewer::combineImgbyRect(std::vector<ImageKeeper>::iterator begin,std::vector<ImageKeeper>::iterator end,cv::Mat out){
 
 	if(end-begin!=numCam){
 		return -1;
@@ -94,7 +94,7 @@ int ImageViewer::combineImgbyRect(cv::vector<ImageKeeper>::iterator begin,cv::ve
 	}
 }
 
-int ImageViewer::DrawLinesinLine(cv::vector<ImageKeeper>::iterator begin,cv::vector<ImageKeeper>::iterator end,cv::Mat out){
+int ImageViewer::DrawLinesinLine(std::vector<ImageKeeper>::iterator begin,std::vector<ImageKeeper>::iterator end,cv::Mat out){
 
 	float col = (float)begin[0].getCols(); float row = (float)begin[0].getRows();
 
@@ -102,7 +102,7 @@ int ImageViewer::DrawLinesinLine(cv::vector<ImageKeeper>::iterator begin,cv::vec
 
 		for(int j=i+1;j<end-begin;j++){
 			
-			cv::vector<cv::Point2f> frompoints,topoints;
+			std::vector<cv::Point2f> frompoints,topoints;
 			matchPoint(begin[i],begin[j],frompoints,topoints);
 
 			std::cout << "begin[" << i << "]  " << "begin[" << j << "]" << std::endl;
@@ -119,7 +119,7 @@ int ImageViewer::DrawLinesinLine(cv::vector<ImageKeeper>::iterator begin,cv::vec
 	return 0;
 }
 
-int ImageViewer::matchPoint(ImageKeeper from,ImageKeeper to,cv::vector<cv::Point2f> &frompoints,cv::vector<cv::Point2f> &topoints){
+int ImageViewer::matchPoint(ImageKeeper from,ImageKeeper to,std::vector<cv::Point2f> &frompoints,std::vector<cv::Point2f> &topoints){
 
 	for(int i=0;i<from.getPointsSize();i++){
 		int fromFID = from.getFeatureID(i);

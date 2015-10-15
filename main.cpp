@@ -18,10 +18,10 @@
 #define IMG "./passage6_1980_f30_dist/"
 
 
-void checkCommand(int* output,int key){
+void checkCommand(int* output,char key){
 
-	if(key == 2555904 || key == -1){
-	}else if(key == 2424832){
+	if(key == 'n'){
+	}else if(key == 'p'){
 		*output -=2;
 	}else{
 		*output -= 1;
@@ -43,7 +43,7 @@ int main(){
 	Drawer drawer;
 	ImageViewer imgviewer(CAM);
 
-	cv::vector<ImageKeeper> cam1,cam2;
+	std::vector<ImageKeeper> cam1,cam2;
 	int x = 30,y=30,length1 = 200, length2 =190;
 
 	for(int i=0;i<15;i++){
@@ -119,8 +119,8 @@ int main(){
 		drawer.DrawPoints(shownImg1);
 		drawer.DrawPoints(shownImg2);
 
-		cv::vector<ImageKeeper> drawn1;
-		cv::vector<ImageKeeper> drawn2;
+		std::vector<ImageKeeper> drawn1;
+		std::vector<ImageKeeper> drawn2;
 
 		for(int j=0;j<LGH;j++){
 			drawn1.push_back(cam1[i-j]);
@@ -136,7 +136,7 @@ int main(){
 		drawer.DrawRoute(drawn1.begin(),drawn1.end(),cam1[i].getIMG());
 		drawer.DrawRoute(drawn2.begin(),drawn2.end(),cam2[i].getIMG());
 
-		cv::vector<ImageKeeper> viewed;
+		std::vector<ImageKeeper> viewed;
 		viewed.push_back(cam1[i]);
 		viewed.push_back(cam2[i]);
 
@@ -154,9 +154,13 @@ int main(){
 	std::string nvmpath = NVM;
 	std::string imgpath = IMG;
 
+<<<<<<< HEAD
 
 	ImageViewer imgv(12);
 	Reader reader(IMG,NVM);
+=======
+	Reader reader(imgpath,nvmpath);
+>>>>>>> master
 	Drawer drawer;
 
 	LineReader lr(NVM);
@@ -174,7 +178,7 @@ int main(){
 	for(int i=LGH;i<reader.ik.size();i++){
 		ImageKeeper shownImg = reader.getIKbyID(i);
 
-		cv::vector<ImageKeeper> hoge;
+		std::vector<ImageKeeper> hoge;
 
 		if(shownImg.getID() != -1){
 			drawer.DrawPoints(shownImg);
@@ -193,9 +197,11 @@ int main(){
 			imgv.showImgsbyRect(viewed.begin(),viewed.end());
 
 			std::cout << "ID:" << reader.getIKIndexbyID(i) << " Name:" << shownImg.getName() << std::endl;
+<<<<<<< HEAD
 			checkCommand(&i,cv::waitKey(100));
 		}
 	}
 
 	return 0;
 }*/
+

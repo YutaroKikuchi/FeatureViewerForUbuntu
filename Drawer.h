@@ -2,6 +2,7 @@
 #define DRAWER
 
 #include <opencv2/core/core.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 #include <iostream>
 #include "FeaturePoint.h"
 #include "ImageKeeper.h"
@@ -11,10 +12,10 @@
 class Drawer{
 
 private:
-	void Drawer::DrawLine(cv::Mat src,cv::Point2f from,cv::Point2f to, float alpha);
-	void Drawer::DrawLine(cv::Mat src,cv::Point2f from,cv::Point2f to);
+	void DrawLine(cv::Mat src,cv::Point2f from,cv::Point2f to, float alpha);
+	void DrawLine(cv::Mat src,cv::Point2f from,cv::Point2f to);
 	void CombineImg(cv::Mat right,cv::Mat left,cv::Mat out);
-	int findID(cv::vector<int>::iterator begin,cv::vector<int>::iterator end,int targetID,int diff);
+	int findID(std::vector<int>::iterator begin,std::vector<int>::iterator end,int targetID,int diff);
 
 public:
 	cv::Mat DrawPoint(cv::Point2f point,cv::Mat img){
@@ -54,7 +55,7 @@ public:
 		}
 	}
 
-	void DrawRoute(cv::vector<ImageKeeper>::iterator iksBegin,cv::vector<ImageKeeper>::iterator iksEnd,cv::Mat out){
+	void DrawRoute(std::vector<ImageKeeper>::iterator iksBegin,std::vector<ImageKeeper>::iterator iksEnd,cv::Mat out){
 
 		int currentID = iksBegin[0].getID(), curPSize = iksBegin[0].getPointsSize();
 
@@ -169,7 +170,7 @@ void Drawer::CombineImg(cv::Mat right,cv::Mat left,cv::Mat out){
 	left.copyTo(roiLeft);	
 }
 
-int Drawer::findID(cv::vector<int>::iterator begin,cv::vector<int>::iterator end,int targetID,int diff){
+int Drawer::findID(std::vector<int>::iterator begin,std::vector<int>::iterator end,int targetID,int diff){
 
 	for(int i=0;begin!=end;begin++,i++){
 		if(*begin == targetID){
