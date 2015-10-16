@@ -28,20 +28,12 @@ void checkCommand(int* output,char key){
 	}
 }
 
-int makeImageKeeper(int id,int x,int y,ImageKeeper out){
-
-	ImageKeeper ik;
-	ik.setFeature(id,x,y);
-	out = ik;
-
-	return 0;
-}
 
 
 int main(){
 
 	Drawer drawer;
-	ImageViewer imgviewer(CAM);
+	ImageViewer imgviewer(CAM,LGH);
 
 	std::vector<ImageKeeper> cam1,cam2;
 	int x = 30,y=30,length1 = 200, length2 =190;
@@ -140,9 +132,13 @@ int main(){
 		viewed.push_back(cam1[i]);
 		viewed.push_back(cam2[i]);
 
-		imgviewer.showImgsbyLine(viewed.begin(),viewed.end());
+		std::vector<ImageKeeper> preimg;
+		preimg.push_back(cam1[i-1]);
+		preimg.push_back(cam2[i-1]);
 
-		cv::waitKey(0);		
+		imgviewer.showImgsbyLine(viewed.begin(),viewed.end(),preimg.begin(),preimg.end());
+
+		checkCommand(&i,cv::waitKey(0));
 	}
 }
 
