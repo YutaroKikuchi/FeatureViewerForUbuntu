@@ -145,7 +145,7 @@ int main(){
 
 int main(int argc ,char* argv[]){
   
-  int numpic  = 200;
+  int numpic;
 
   std::string nvmpath = NVM;
   std::string imgpath = IMG;
@@ -164,29 +164,28 @@ int main(int argc ,char* argv[]){
   reader.setFeaturePoint(lr.startFeature[0],lr.endFeature[0]);
   reader.setImg(lr.startImg[1],lr.endImg[1]);
   reader.setFeaturePoint(lr.startFeature[1],lr.endFeature[1]);
+  
 
-  std::vector<ImageKeeper> drawnCam1;
-  std::vector<ImageKeeper> drawnCam2;
+  numpic = lr.endImg[0] - lr.startImg[0]+1 + lr.endImg[1]-lr.startImg[1]+1;
 
   cv::namedWindow("hoge",CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
-  for(int i=LGH;i<20;i++){
+  for(int i=LGH;i<numpic;i++){
 
-    cv::imshow("hoge",reader.getIKbyID(1,i).getIMG());
-    cv::waitKey(0);
-    
-    
-    /*
-    drawnCam1.push_back(reader.getIKbyID(1,i));
-    drawnCam2.push_back(reader.getIKbyID(2,i));
+    std::cout << i <<std::endl;
 
-    for(int j=1;j<LGH;j++){
+    std::vector<ImageKeeper> drawnCam1;
+    std::vector<ImageKeeper> drawnCam2;
+
+    for(int j=0;j<LGH;j++){
       drawnCam1.push_back(reader.getIKbyID(1,i-j));
       drawnCam2.push_back(reader.getIKbyID(2,i-j));
     }
+    
+    drawer.DrawPoints(drawnCam1[0]);
+    drawer.DrawPoints(drawnCam2[0]);
 
     drawer.DrawRoute(drawnCam1.begin(),drawnCam1.end(),drawnCam1[0].getIMG());
     drawer.DrawRoute(drawnCam2.begin(),drawnCam2.end(),drawnCam2[0].getIMG());
-	  
 
     std::vector<ImageKeeper> preimg;
     preimg.push_back(drawnCam1[1]);
@@ -198,15 +197,23 @@ int main(int argc ,char* argv[]){
 
     imgv.showImgsbyLine(viewedimg.begin(),viewedimg.end(),preimg.begin(),preimg.end());
     
-    drawnCam1.clear();
-    drawnCam2.clear();
-    */
   }
 
+  /*
   for(int i=LGH;i<20;i++){
+    std::vector<ImageKeeper> drawnCam2;
+    
+    for(int j=0;j<LGH;j++){
+      drawnCam2.push_back(reader.getIKbyID(2,i-j));
+    }
+
+    drawer.DrawPoints(drawnCam2[0]);
+    drawer.DrawRoute(drawnCam2.begin(),drawnCam2.end(),drawnCam2[0].getIMG());
+    
     cv::imshow("hoge",reader.getIKbyID(2,i).getIMG());
     cv::waitKey(0);
   }
+  */
 
         
 
