@@ -69,8 +69,8 @@ public:
 		  std::cout << name << std::endl;
 		imbuff.setName(name);
 		imbuff.setIDbyName();
-		imbuff.setIMG(cv::imread(imgpass+imbuff.getName(),1));
 		ik.push_back(imbuff);
+		ik[currentID].setIMG(cv::imread(imgpass+imbuff.getName(),1));
 		imgLink.push_back(imbuff.getID());
 
 		currentID++;
