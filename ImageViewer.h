@@ -36,13 +36,12 @@ public:
 
 		//DrawLinesinLine(begin,end,prebegin,preend,output);
 
-		cv::imshow("hoge",begin[0].getIMG());
-		cv::waitKey(0);
-
-		cv::imshow("hoge",begin[1].getIMG());
-		cv::waitKey(0);
+		int hoge;
+		//std::cout << "width;" << output.cols << " height:" << output.rows << std::endl;
+		//std::cin >> hoge;
 		
-		cv::imshow("hoge",output); 
+		cv::imshow("hoge",output);
+		cv::waitKey(500);
 
 		return 0;
 	}
