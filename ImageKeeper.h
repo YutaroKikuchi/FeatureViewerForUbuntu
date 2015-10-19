@@ -1,6 +1,8 @@
 #ifndef IMAGEKEEPER
 #define IMAGEKEEPER
 
+#include<string>
+
 class Feature{
 
 public:
@@ -18,12 +20,12 @@ class ImageKeeper{
 
 private:
 	cv::Mat img;
+	int camID;
 	int ID;
 	int symID;
 	std::string name;
 	std::vector<Feature> points;
 	int rows,cols;
-
 public:
 	void setName(std::string in){
 		name = in;
@@ -31,6 +33,34 @@ public:
 
 	std::string getName(){
 		return name;
+	}
+
+	int setIDbyName(){
+
+       
+
+	  size_t camIDpos1 = name.find("!");
+	  size_t camIDpos2 = name.rfind("!");
+
+	  size_t IDpos1 = camIDpos2;
+	  size_t IDpos2 = name.find(".");
+
+	  // std::cout << "camID:" << name.substr(camIDpos1+1,camIDpos2-camIDpos1-1) << std::endl;
+	  //std::cout << "ID:" << name.substr(IDpos1+1,IDpos2-IDpos1-1) << std::endl;
+
+	  camID = std::stoi(name.substr(camIDpos1+1,camIDpos2-camIDpos1-1));
+	  ID = std::stoi(name.substr(IDpos1+1,IDpos2-IDpos1-1));
+	  
+	  return 0;
+
+	}
+
+	void setCamID(int in){
+	  camID = in;
+	}
+
+	int getCamID(){
+	  return camID;
 	}
 
 	void setID(int in){
@@ -67,7 +97,7 @@ public:
 		p.point.x = x;
 		p.point.y = y;
 
-		//p.fixPoint(rows,cols);
+		p.fixPoint(rows,cols);
 
 		points.push_back(p);
 	}
@@ -140,5 +170,7 @@ public:
 		return rows;
 	}
 };
+
+
 
 #endif

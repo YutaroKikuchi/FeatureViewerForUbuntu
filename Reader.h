@@ -37,7 +37,7 @@ public:
 
 	Reader(){}
 
-	Reader(std::string img,std::string nvm){
+	Reader(int cam,std::string img,std::string nvm){
 		imgpass = img;
 		nvmpass = nvm;
 		currentID =0;
@@ -47,44 +47,39 @@ public:
 	}
 
 	void setImg(int startline, int endline){
-		//ik.resize(endline-startline+1);
-		//ik.reserve(endline-startline+1);
-		//imgLink.reserve(endline-startline+1);
-
 	  std::ifstream ifs(nvmpass.c_str());
-		std::string buff;
-		ImageKeeper imbuff;
+	  std::string buff;
+	  ImageKeeper imbuff;
+	  
+	  prevID = currentID;
 
-		cv::Mat test;
-
-		prevID = currentID;
+	  if(ifs.fail()){
+	    std::cout << "ERROR" << std::endl;
+	  }else{
+	    int lineno = 0;
+	    //cv::namedWindow("video",CV_WINDOW_AUTOSIZE);
+	    while(std::getline(ifs,buff)){
+	      lineno++;
+	      if(lineno >= startline && lineno<=endline){
+		std::string name = getfileName(buff);
 		
-		if(ifs.fail()){
-			std::cout << "ERROR" << std::endl;
-		}else{
-			int lineno = 0;
-			//cv::namedWindow("video",CV_WINDOW_AUTOSIZE);
-			while(std::getline(ifs,buff)){
-				lineno++;
-				if(lineno >= startline && lineno<=endline){
-					std::string name = getfileName(buff);
-					int num = getImgNum(name);
+		//std::cout << currentID << std::endl;
+		
+		if(currentID % 10 == 0)
+		  std::cout << name << std::endl;
+		imbuff.setName(name);
+		imbuff.setIDbyName();
+		imbuff.setIMG(cv::imread(imgpass+imbuff.getName(),1));
+		ik.push_back(imbuff);
+		imgLink.push_back(imbuff.getID());
 
-					std::cout << currentID << std::endl;
-
-					imbuff.setName(name);
-					imbuff.setID(num);
-					imgLink.push_back(num);
-					ik.push_back(imbuff);
-					ik[currentID].setIMG(cv::imread(imgpass+ik[currentID].getName(),1));
-
-					currentID++;
-				}
+		currentID++;
+	      }
 				
-			}
-		}
+	    }
+	  }
 
-		std::sort(imgLink.begin(),imgLink.end());
+	  std::sort(imgLink.begin(),imgLink.end());
 
 		/*
 		if(ifs.fail()){
@@ -147,72 +142,61 @@ public:
 		//featurePoints.reserve(endline-startline+1);
 
 	  std::ifstream ifs(nvmpass.c_str());
-		std::string buff;
+	  std::string buff;
 
-		std::cout << "setting FeaturePoints";
+	  std::cout << "setting FeaturePoints";
 
-		ImageKeeper imbuff;
-		if(ifs.fail()){
-			std::cout << "ERROR" << std::endl;
-		}else{
-			int lineno = 0;
-			while(std::getline(ifs,buff)){
-				lineno++;
-				if((lineno >= startline && lineno<=endline) && (lineno%FREQ == 0)){
+	  ImageKeeper imbuff;
+	  if(ifs.fail()){
+	    std::cout << "ERROR" << std::endl;
+	  }else{
+	    int lineno = 0;
+	    while(std::getline(ifs,buff)){
+	      lineno++;
+	      if((lineno >= startline && lineno<=endline) && (lineno%FREQ == 0)){
+		
+		if(lineno % 1000 ==0)
+		  std::cout << ".";
+		//std::cout<< buff << std::endl;
 
-					if(lineno % 1000 ==0)
-						std::cout << ".";
-					//std::cout<< buff << std::endl;
+		getnumofImage(buff," ");
+		int NumImage = std::stoi(FeatureData[6]);
+		FeaturePoint hoge(currentFeatureID);
+		featurePoints.push_back(hoge);
+		//std::cout << "*******************************" << std::endl <<"ID:"<< featureID << std::endl;
+		//std::cout << "NumOfImage:"<<NumImage<<std::endl;
+		for(int i=0;i<NumImage;i++){
+		  int ImageIndex;
+		  
+		  if(prevID != 0){
+		    ImageIndex = std::stoi(FeatureData[i*4+7]) + prevID;
+		  }else{
+		    ImageIndex = std::stoi(FeatureData[i*4+7]);
+		  }
+		  
+		  int FeatureIndex = std::stoi(FeatureData[i*4+7+1]);
+		  int FeatureID = currentFeatureID;
+		  float xPoint = std::stof(FeatureData[i*4+7+2]);
+		  float yPoint = std::stof(FeatureData[i*4+7+3]);
+		  
+		  if(ImageIndex == 0){
+		    featureindex.push_back(FeatureIndex);
+		  }
 
-					getnumofImage(buff," ");
-					int NumImage = std::stoi(FeatureData[6]);
-					FeaturePoint hoge(currentFeatureID);
-					featurePoints.push_back(hoge);
-					//std::cout << "*******************************" << std::endl <<"ID:"<< featureID << std::endl;
-					//std::cout << "NumOfImage:"<<NumImage<<std::endl;
-					for(int i=0;i<NumImage;i++){
-						int ImageIndex;
-
-						if(prevID != 0){
-							ImageIndex = std::stoi(FeatureData[i*4+7]) + prevID;
-						}else{
-							ImageIndex = std::stoi(FeatureData[i*4+7]);
-						}
-
-						int FeatureIndex = std::stoi(FeatureData[i*4+7+1]);
-						int FeatureID = currentFeatureID;
-						float xPoint = std::stof(FeatureData[i*4+7+2]);
-						float yPoint = std::stof(FeatureData[i*4+7+3]);
-
-						if(ImageIndex == 0){
-							featureindex.push_back(FeatureIndex);
-						}
-
-						/*
-						if(std::stoi(FeatureData[i*4+7+1]) == 9){
-							img.push_back(ImageIndex);
-							feat.push_back(FeatureIndex);
-							std::cout << "FeatureIndex:" << FeatureIndex << " ImageIndex:" << ImageIndex << std::endl;
-						}*/
-
-						//std::cout << "ImageIndex:" << ImageIndex << std::endl;
-						//std::cout << " xPoint:" << xPoint << std::endl;
-						//std::cout << " yPoint:" << yPoint << std::endl<<std::endl;
-
-						featurePoints[currentFeatureID].setimgID(ImageIndex);
-
-						ik[ImageIndex].setFeature(FeatureID,xPoint,yPoint);
-					}
-
-					currentFeatureID++;
-				}
-
-				FeatureData.clear();
-				
-			}
-
-			std::cout << std::endl;
+		  featurePoints[currentFeatureID].setimgID(ImageIndex);
+		  
+		  ik[ImageIndex].setFeature(FeatureID,xPoint,yPoint);
 		}
+		
+		currentFeatureID++;
+	      }
+	      
+	      FeatureData.clear();
+	      
+	    }
+	    
+	    std::cout << std::endl;
+	  }
 	}
 
 	ImageKeeper getIKbyID(int in){
@@ -225,6 +209,19 @@ public:
 		ImageKeeper ret;
 		ret.setID(-1);
 		return ret;
+	}
+
+	ImageKeeper getIKbyID(int cam,int in){
+	  for(int i=0;i<ik.size();i++){
+	    if(ik[i].getID()==in && ik[i].getCamID()==cam){
+	      return ik[i];
+	    }
+	  }
+
+	  ImageKeeper ret;
+	  ret.setID(-1);
+	  return ret;
+
 	}
 
 	int getIKIndexbyID(int in){

@@ -34,8 +34,14 @@ public:
 
 		combineImgbyLine(begin,end,output);
 
-		DrawLinesinLine(begin,end,prebegin,preend,output);
+		//DrawLinesinLine(begin,end,prebegin,preend,output);
 
+		cv::imshow("hoge",begin[0].getIMG());
+		cv::waitKey(0);
+
+		cv::imshow("hoge",begin[1].getIMG());
+		cv::waitKey(0);
+		
 		cv::imshow("hoge",output); 
 
 		return 0;
@@ -137,8 +143,8 @@ int ImageViewer::matchPoint(ImageKeeper from,ImageKeeper to,std::vector<cv::Poin
 		int fromFID = from.getFeatureID(i);
 		cv::Point2f point = to.getPointID(fromFID);
 
-		std::cout << "  getPointID(" << fromFID << ");" << std::endl;
-		std::cout << "  point = " << point << std::endl;
+		//std::cout << "  getPointID(" << fromFID << ");" << std::endl;
+		//std::cout << "  point = " << point << std::endl;
 
 		if(point != cv::Point2f(0.0,0.0)){
 			frompoints.push_back(from.getPointID(fromFID));

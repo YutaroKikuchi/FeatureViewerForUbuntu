@@ -5,7 +5,7 @@
 #include "ImageKeeper.h"
 #include "Drawer.h"
 #include "FeaturePoint.h"
-#include "Reader.h"
+//#include "Reader.h"
 #include "LineReader.h"
 #include "FeatureViewer.h"
 #include "ImageViewer.h"
@@ -14,8 +14,8 @@
 #define CAM 2
 
 
-#define NVM "./passage6_1980_f30_dist/nvm/passage6_param.nvm"
-#define IMG "./passage6_1980_f30_dist/"
+#define NVM "./multicam/nvm/passage6.nvm"
+#define IMG "./multicam/"
 
 
 void checkCommand(int* output,char key){
@@ -29,7 +29,7 @@ void checkCommand(int* output,char key){
 }
 
 
-
+/*
 int main(){
 
 	Drawer drawer;
@@ -140,64 +140,85 @@ int main(){
 
 		checkCommand(&i,cv::waitKey(0));
 	}
-}
+}*/
 
-/*
-int main(){
 
-	int numpic;
+int main(int argc ,char* argv[]){
+  
+  int numpic  = 200;
 
-	std::string nvmpath = NVM;
-	std::string imgpath = IMG;
+  std::string nvmpath = NVM;
+  std::string imgpath = IMG;
 
-<<<<<<< HEAD
+  ImageViewer imgv(CAM,LGH);
+  Reader reader(CAM,IMG,NVM);
 
-	ImageViewer imgv(12);
-	Reader reader(IMG,NVM);
-=======
-	Reader reader(imgpath,nvmpath);
->>>>>>> master
-	Drawer drawer;
+  Drawer drawer;
 
-	LineReader lr(NVM);
+  LineReader lr(NVM);
 
-	lr.setLineNo();
-	lr.showLines();
+  lr.setLineNo();
+  lr.showLines();
+
+  reader.setImg(lr.startImg[0],lr.endImg[0]);
+  reader.setFeaturePoint(lr.startFeature[0],lr.endFeature[0]);
+  reader.setImg(lr.startImg[1],lr.endImg[1]);
+  reader.setFeaturePoint(lr.startFeature[1],lr.endFeature[1]);
+
+  std::vector<ImageKeeper> drawnCam1;
+  std::vector<ImageKeeper> drawnCam2;
+
+  cv::namedWindow("hoge",CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
+  for(int i=LGH;i<20;i++){
+
+    cv::imshow("hoge",reader.getIKbyID(1,i).getIMG());
+    cv::waitKey(0);
+    
+    
+    /*
+    drawnCam1.push_back(reader.getIKbyID(1,i));
+    drawnCam2.push_back(reader.getIKbyID(2,i));
+
+    for(int j=1;j<LGH;j++){
+      drawnCam1.push_back(reader.getIKbyID(1,i-j));
+      drawnCam2.push_back(reader.getIKbyID(2,i-j));
+    }
+
+    drawer.DrawRoute(drawnCam1.begin(),drawnCam1.end(),drawnCam1[0].getIMG());
+    drawer.DrawRoute(drawnCam2.begin(),drawnCam2.end(),drawnCam2[0].getIMG());
+	  
+
+    std::vector<ImageKeeper> preimg;
+    preimg.push_back(drawnCam1[1]);
+    preimg.push_back(drawnCam2[1]);
+
+    std::vector<ImageKeeper> viewedimg;
+    viewedimg.push_back(drawnCam1[0]);
+    viewedimg.push_back(drawnCam2[0]);
+
+    imgv.showImgsbyLine(viewedimg.begin(),viewedimg.end(),preimg.begin(),preimg.end());
+    
+    drawnCam1.clear();
+    drawnCam2.clear();
+    */
+  }
+
+  for(int i=LGH;i<20;i++){
+    cv::imshow("hoge",reader.getIKbyID(2,i).getIMG());
+    cv::waitKey(0);
+  }
+
+        
+
+	/*
 
 	reader.setImg(lr.startImg[0],lr.endImg[0]);
 	reader.setFeaturePoint(lr.startFeature[0],lr.endFeature[0]);
 	reader.setImg(lr.startImg[1],lr.endImg[1]);
 	reader.setFeaturePoint(lr.startFeature[1],lr.endFeature[1]);
 
-	cv::namedWindow("hoge",CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
+	cv::namedWindow("hoge",CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);*/
 
-	for(int i=LGH;i<reader.ik.size();i++){
-		ImageKeeper shownImg = reader.getIKbyID(i);
-
-		std::vector<ImageKeeper> hoge;
-
-		if(shownImg.getID() != -1){
-			drawer.DrawPoints(shownImg);
-
-			for(int j=0;j<LGH;j++){
-				hoge.push_back(reader.getIKbyID(i-j));
-			}
-			drawer.DrawRoute(hoge.begin(),hoge.end(),reader.getIKbyID(i).getIMG());
-			
-			cv::vector<ImageKeeper> viewed;
-
-			for(int k=0;k<12;k++){
-				viewed.push_back(reader.getIKbyID(i));
-			}
-
-			imgv.showImgsbyRect(viewed.begin(),viewed.end());
-
-			std::cout << "ID:" << reader.getIKIndexbyID(i) << " Name:" << shownImg.getName() << std::endl;
-<<<<<<< HEAD
-			checkCommand(&i,cv::waitKey(100));
-		}
-	}
-
-	return 0;
-}*/
-
+        
+  return 0;
+}

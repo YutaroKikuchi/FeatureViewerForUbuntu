@@ -9,7 +9,7 @@
 #define LGH 3
 #define INTER 1
 
-
+/*
 class FeatureViewer{
 private:
 	std::string windowname;
@@ -80,6 +80,6 @@ public:
 			ofs << "featureindex:" << reader.featureindex[i] << std::endl;
 		}
 	}
-};
+	};*/
 
 #endif
