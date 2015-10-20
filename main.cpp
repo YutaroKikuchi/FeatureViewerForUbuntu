@@ -171,7 +171,7 @@ int main(int argc ,char* argv[]){
   cv::namedWindow("hoge",CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
   for(int i=LGH;i<numpic;i++){
 
-    std::cout << i <<std::endl;
+    //std::cout << i <<std::endl;
 
     std::vector<ImageKeeper> drawnCam1;
     std::vector<ImageKeeper> drawnCam2;
@@ -179,7 +179,9 @@ int main(int argc ,char* argv[]){
     drawnCam1.push_back(reader.getIKbyID(1,i));
     drawnCam2.push_back(reader.getIKbyID(2,i));
 
+/*
     std::cout <<"cam1.row="<<drawnCam1[0].getRows()<<" cam1.col="<< drawnCam1[0].getCols() <<" cam2.row=" << drawnCam2[0].getRows() << " cam2.col=" << drawnCam2[0].getCols()<<std::endl;
+*/
     if(drawnCam1[0].getID() == -1 || drawnCam2[0].getID() == -1){
       continue;
     }

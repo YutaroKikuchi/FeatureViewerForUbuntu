@@ -34,14 +34,14 @@ public:
 
 		combineImgbyLine(begin,end,output);
 
-		//DrawLinesinLine(begin,end,prebegin,preend,output);
+		DrawLinesinLine(begin,end,prebegin,preend,output);
 
 		int hoge;
 		//std::cout << "width;" << output.cols << " height:" << output.rows << std::endl;
 		//std::cin >> hoge;
 		
 		cv::imshow("hoge",output);
-		cv::waitKey(500);
+		cv::waitKey(0);
 
 		return 0;
 	}
@@ -113,7 +113,8 @@ int ImageViewer::DrawLinesinLine(std::vector<ImageKeeper>::iterator begin,std::v
 		  }
 		  std::vector<cv::Point2f> frompoints,topoints;
 		  matchPoint(prebegin[i],begin[j],frompoints,topoints);
-		  
+		 
+		/* 
 		  if(frompoints.size()>0 && topoints.size()>0){
 		    std::cout << "Match" << std::endl;
 		  }else{
@@ -121,7 +122,7 @@ int ImageViewer::DrawLinesinLine(std::vector<ImageKeeper>::iterator begin,std::v
 		  }
 
 		  std::cout << "begin[" << i << "]  " << "begin[" << j << "]" << std::endl;
-
+*/
 		  for(int k=0;k<frompoints.size();k++){
 		    cv::Point2f from = frompoints[k]+cv::Point2f(col*i,0.0);
 		    cv::Point2f to = topoints[k]+cv::Point2f(col*j,0.0);

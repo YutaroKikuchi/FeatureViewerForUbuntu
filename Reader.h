@@ -9,7 +9,7 @@
 #include "./ImageKeeper.h"
 #include "./FeaturePoint.h"
 
-#define FREQ 2
+#define FREQ 10
 
 class Reader{
 
@@ -67,6 +67,7 @@ public:
 		
 		if(currentID % 10 == 0)
 		  std::cout << name << std::endl;
+
 		imbuff.setName(name);
 		imbuff.setIDbyName();
 		ik.push_back(imbuff);
