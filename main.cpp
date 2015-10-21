@@ -198,13 +198,14 @@ int main(int argc ,char* argv[]){
     preimg.push_back(drawnCam1[1]);
     preimg.push_back(drawnCam2[1]);
 
-    if(drawnCam2[1].isHaveFeature(drawnCam1[0].getID()) == false){
-	drawer.DrawRoute(drawnCam1.begin(),drawnCam1.end(),drawnCam1[0].getIMG());
-    }
+    std::vector<bool> flagCam1(drawnCam1[0].getPointsSize()),flagCam2(drawnCam2[0].getPointsSize());
 
-    if(drawnCam1[2].isHaveFeature(drawnCam2[0].getID()) == false){
-	drawer.DrawRoute(drawnCam2.begin(),drawnCam2.end(),drawnCam2[0].getIMG());
-    }
+    drawnCam2[1].getFeatureFlags(drawnCam1[0],flagCam1);
+    drawnCam1[1].getFeatureFlags(drawnCam2[0],flagCam2);
+
+    drawer.DrawRoute(drawnCam1.begin(),drawnCam1.end(),drawnCam1[0].getIMG(),flagCam1);
+    drawer.DrawRoute(drawnCam2.begin(),drawnCam2.end(),drawnCam2[0].getIMG(),flagCam2);
+
 
     std::vector<ImageKeeper> viewedimg;
     viewedimg.push_back(drawnCam1[0]);
@@ -215,34 +216,6 @@ int main(int argc ,char* argv[]){
     checkCommand(&i,cv::waitKey(0));
     
   }
-
-  /*
-  for(int i=LGH;i<20;i++){
-    std::vector<ImageKeeper> drawnCam2;
-    
-    for(int j=0;j<LGH;j++){
-      drawnCam2.push_back(reader.getIKbyID(2,i-j));
-    }
-
-    drawer.DrawPoints(drawnCam2[0]);
-    drawer.DrawRoute(drawnCam2.begin(),drawnCam2.end(),drawnCam2[0].getIMG());
-    
-    cv::imshow("hoge",reader.getIKbyID(2,i).getIMG());
-    cv::waitKey(0);
-  }
-  */
-
-        
-
-	/*
-
-	reader.setImg(lr.startImg[0],lr.endImg[0]);
-	reader.setFeaturePoint(lr.startFeature[0],lr.endFeature[0]);
-	reader.setImg(lr.startImg[1],lr.endImg[1]);
-	reader.setFeaturePoint(lr.startFeature[1],lr.endFeature[1]);
-
-	cv::namedWindow("hoge",CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);*/
-
         
   return 0;
 }
