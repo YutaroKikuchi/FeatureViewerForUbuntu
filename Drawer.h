@@ -55,6 +55,7 @@ public:
 		}
 	}
 
+
 	void DrawRoute(std::vector<ImageKeeper>::iterator iksBegin,std::vector<ImageKeeper>::iterator iksEnd,cv::Mat out){
 
 		int currentID = iksBegin[0].getID(), curPSize = iksBegin[0].getPointsSize();
@@ -69,6 +70,29 @@ public:
 					break;
 				}else{
 					cv::line(out,to,from,cv::Scalar(0,0,200),3,8);
+				}
+			}
+		}
+	}
+
+
+	void DrawRoute(std::vector<ImageKeeper>::iterator iksBegin,std::vector<ImageKeeper>::iterator iksEnd,cv::Mat out,std::vector<bool> &flags){
+
+		int currentID = iksBegin[0].getID(), curPSize = iksBegin[0].getPointsSize();
+
+		for(int i=0;i<curPSize;i++){
+			int toFID = iksBegin[0].getFeatureID(i);
+
+			if(flags[i]==false){
+
+				for(int j=0;iksBegin+j+1!=iksEnd;j++){
+					cv::Point2f to = iksBegin[j].getPointID(toFID);
+					cv::Point2f from = iksBegin[j+1].getPointID(toFID);
+					if(from == cv::Point2f(0.0,0.0)){
+						break;
+					}else{
+						cv::line(out,to,from,cv::Scalar(0,0,200),3,8);
+					}
 				}
 			}
 		}
