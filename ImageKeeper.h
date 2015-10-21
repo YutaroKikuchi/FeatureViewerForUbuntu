@@ -127,10 +127,26 @@ public:
 	bool isHaveFeature(int in){
 		for(int i=0;i<points.size();i++){
 			if(points[i].FID == in){
+				
+				//std::cout << "points[i].FID:" << points[i].FID << " in:" << in << std::endl;
 				return true;
 			}
 		}
 		return false;
+	}
+
+	int getFeatureFlags(ImageKeeper ik,std::vector<bool> &flags){
+		for(int i=0;i<points.size();i++){
+			for(int j=0;j<ik.getPointsSize();j++){
+				if(isHaveFeature(ik.getFeatureID(j)) == true){
+					flags[j] = true;
+				}else{
+					flags[j] = false;
+				}
+			}
+		}
+
+		return 1;
 	}
 
 	void showPointsSize(){
