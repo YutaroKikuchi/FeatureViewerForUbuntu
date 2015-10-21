@@ -41,7 +41,7 @@ public:
 		//std::cin >> hoge;
 		
 		cv::imshow("hoge",output);
-		cv::waitKey(0);
+		//cv::waitKey(0);
 
 		return 0;
 	}
@@ -51,9 +51,6 @@ public:
 		cv::Mat output(cv::Size(begin[0].getIMG().cols*3,begin[0].getIMG().rows*(int)(numCam/3)),CV_8UC3);
 
 		combineImgbyRect(begin,end,output);
-
-
-
 		cv::imshow("hoge",output);
 
 		cv::waitKey(0);
@@ -121,13 +118,13 @@ int ImageViewer::DrawLinesinLine(std::vector<ImageKeeper>::iterator begin,std::v
 		    std::cout << "no Match" << std::endl;
 		  }
 
-		  std::cout << "begin[" << i << "]  " << "begin[" << j << "]" << std::endl;
-*/
+		  std::cout << "begin[" << i << "]  " << "begin[" << j << "]" << std::endl;*/
+
 		  for(int k=0;k<frompoints.size();k++){
 		    cv::Point2f from = frompoints[k]+cv::Point2f(col*i,0.0);
 		    cv::Point2f to = topoints[k]+cv::Point2f(col*j,0.0);
 		    
-		    cv::line(out,from,to,cv::Scalar(0.0,0.0,200.0),2,8);
+		    cv::line(out,from,to,cv::Scalar(0.0,0.0,200.0),2,CV_AA);
 		  }
 		}
 
@@ -137,7 +134,7 @@ int ImageViewer::DrawLinesinLine(std::vector<ImageKeeper>::iterator begin,std::v
 
 int ImageViewer::matchPoint(ImageKeeper from,ImageKeeper to,std::vector<cv::Point2f> &frompoints,std::vector<cv::Point2f> &topoints){
 
-  std::cout << " start MatchPoint" << std::endl;
+  //std::cout << " start MatchPoint" << std::endl;
 
 	for(int i=0;i<from.getPointsSize();i++){
 		int fromFID = from.getFeatureID(i);

@@ -190,22 +190,29 @@ int main(int argc ,char* argv[]){
       drawnCam1.push_back(reader.getIKbyID(1,i-j));
       drawnCam2.push_back(reader.getIKbyID(2,i-j));
     }
-    
+
     drawer.DrawPoints(drawnCam1[0]);
     drawer.DrawPoints(drawnCam2[0]);
-
-    drawer.DrawRoute(drawnCam1.begin(),drawnCam1.end(),drawnCam1[0].getIMG());
-    drawer.DrawRoute(drawnCam2.begin(),drawnCam2.end(),drawnCam2[0].getIMG());
 
     std::vector<ImageKeeper> preimg;
     preimg.push_back(drawnCam1[1]);
     preimg.push_back(drawnCam2[1]);
+
+    if(drawnCam2[1].isHaveFeature(drawnCam1[0].getID()) == false){
+	drawer.DrawRoute(drawnCam1.begin(),drawnCam1.end(),drawnCam1[0].getIMG());
+    }
+
+    if(drawnCam1[2].isHaveFeature(drawnCam2[0].getID()) == false){
+	drawer.DrawRoute(drawnCam2.begin(),drawnCam2.end(),drawnCam2[0].getIMG());
+    }
 
     std::vector<ImageKeeper> viewedimg;
     viewedimg.push_back(drawnCam1[0]);
     viewedimg.push_back(drawnCam2[0]);
 
     imgv.showImgsbyLine(viewedimg.begin(),viewedimg.end(),preimg.begin(),preimg.end());
+
+    checkCommand(&i,cv::waitKey(0));
     
   }
 
