@@ -27,6 +27,17 @@ private:
 	std::vector<Feature> points;
 	int rows,cols;
 public:
+
+	ImageKeeper(){
+	}
+
+	ImageKeeper(int id,int camid,std::string Name,cv::Mat image){
+
+		ID = id;
+		camID = camid;
+		name = Name;
+		img = image;
+	}
 	void setName(std::string in){
 		name = in;
 	}
