@@ -61,6 +61,13 @@ public:
 				}
 				presize = size;
 			}
+
+			for(int i=0;i<endFeature.size();i++){
+				if(startImg[i]>endImg[i])
+					startImg[i] = endImg[i];
+				if(startFeature[i] > endFeature[i])
+					startFeature[i] = endFeature[i];
+			}
 		}
 	}
 
@@ -81,7 +88,7 @@ public:
 	}
 
 	void showLines(){
-		for(int i=0;i<startImg.size();i++){
+		for(int i=0;i<endFeature.size();i++){
 			std::cout << "No." << i << std::endl << "startImg:" << startImg[i] << "  endImg" << endImg[i] << std::endl << "startFeature:" << startFeature[i] << "  endFeature" << endFeature[i] << std::endl << std::endl;
 		}
 	}
