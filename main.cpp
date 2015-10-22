@@ -145,77 +145,93 @@ int main(){
 
 int main(int argc ,char* argv[]){
   
-  int numpic;
+	int numpic;
 
-  std::string nvmpath = NVM;
-  std::string imgpath = IMG;
+	std::string nvmpath = NVM;
+	std::string imgpath = IMG;
 
-  ImageViewer imgv(CAM,LGH);
-  Reader reader(CAM,IMG,NVM);
+	ImageViewer imgv(CAM,LGH);
+	Reader reader(CAM,IMG,NVM);
 
-  Drawer drawer;
+	Drawer drawer;
 
-  LineReader lr(NVM);
+	LineReader lr(NVM);
 
-  lr.setLineNo();
-  lr.showLines();
+	lr.setLineNo();
+	lr.showLines();
 
-  reader.setImg(lr.startImg[0],lr.endImg[0]);
-  reader.setFeaturePoint(lr.startFeature[0],lr.endFeature[0]);
-  reader.setImg(lr.startImg[1],lr.endImg[1]);
-  reader.setFeaturePoint(lr.startFeature[1],lr.endFeature[1]);
+	reader.setImg(lr.startImg[0],lr.endImg[0]);
+	reader.setFeaturePoint(lr.startFeature[0],lr.endFeature[0]);
+	reader.setImg(lr.startImg[1],lr.endImg[1]);
+	reader.setFeaturePoint(lr.startFeature[1],lr.endFeature[1]);
+
+  
   
 
-  numpic = lr.endImg[0] - lr.startImg[0]+1 + lr.endImg[1]-lr.startImg[1]+1;
+	numpic = lr.endImg[0] - lr.startImg[0]+1 + lr.endImg[1]-lr.startImg[1]+1;
 
-  cv::namedWindow("hoge",CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
-  for(int i=LGH;i<numpic;i++){
+	cv::namedWindow("hoge",CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
+	for(int i=LGH;i<numpic;i++){
 
-    //std::cout << i <<std::endl;
+		//std::cout << i <<std::endl;
 
-    std::vector<ImageKeeper> drawnCam1;
-    std::vector<ImageKeeper> drawnCam2;
+		std::vector<ImageKeeper> drawnCam1;
+		std::vector<ImageKeeper> drawnCam2;
 
-    drawnCam1.push_back(reader.getIKbyID(1,i));
-    drawnCam2.push_back(reader.getIKbyID(2,i));
+		drawnCam1.push_back(reader.getIKbyID(1,i));
+		drawnCam2.push_back(reader.getIKbyID(2,i));
 
 /*
     std::cout <<"cam1.row="<<drawnCam1[0].getRows()<<" cam1.col="<< drawnCam1[0].getCols() <<" cam2.row=" << drawnCam2[0].getRows() << " cam2.col=" << drawnCam2[0].getCols()<<std::endl;
 */
-    if(drawnCam1[0].getID() == -1 || drawnCam2[0].getID() == -1){
-      continue;
-    }
 
-    for(int j=1;j<LGH;j++){
-      drawnCam1.push_back(reader.getIKbyID(1,i-j));
-      drawnCam2.push_back(reader.getIKbyID(2,i-j));
-    }
+		if(drawnCam1[0].getID() == -1 && drawnCam2[0].getID() == -1){
+			continue;
+	    	}else{
+			ImageKeeper buff(-1,0,"black",cv::Mat::zeros(1080,1920,CV_8UC3));
 
-    drawer.DrawPoints(drawnCam1[0]);
-    drawer.DrawPoints(drawnCam2[0]);
+			if(drawnCam1[0].getID()==-1){
+				drawnCam1[0]=buff;
+				drawnCam1[0].setIMG(cv::Mat::zeros(1080,1920,CV_8UC3));
+	    		}
 
-    std::vector<ImageKeeper> preimg;
-    preimg.push_back(drawnCam1[1]);
-    preimg.push_back(drawnCam2[1]);
+			if(drawnCam2[0].getID()==-1){
+				drawnCam2[0]=buff;
+				drawnCam2[0].setIMG(cv::Mat::zeros(1080,1920,CV_8UC3));
+			}
+		}
 
-    std::vector<bool> flagCam1(drawnCam1[0].getPointsSize()),flagCam2(drawnCam2[0].getPointsSize());
+		for(int j=1;j<LGH;j++){
+			drawnCam1.push_back(reader.getIKbyID(1,i-j));
+			drawnCam2.push_back(reader.getIKbyID(2,i-j));
+		}
 
-    drawnCam2[1].getFeatureFlags(drawnCam1[0],flagCam1);
-    drawnCam1[1].getFeatureFlags(drawnCam2[0],flagCam2);
+		drawer.DrawPoints(drawnCam1[0]);
+		drawer.DrawPoints(drawnCam2[0]);
 
-    drawer.DrawRoute(drawnCam1.begin(),drawnCam1.end(),drawnCam1[0].getIMG(),flagCam1);
-    drawer.DrawRoute(drawnCam2.begin(),drawnCam2.end(),drawnCam2[0].getIMG(),flagCam2);
+		std::vector<ImageKeeper> preimg;
+		preimg.push_back(drawnCam1[1]);
+		preimg.push_back(drawnCam2[1]);
 
+		std::vector<bool> flagCam1(drawnCam1[0].getPointsSize()),flagCam2(drawnCam2[0].getPointsSize());
 
-    std::vector<ImageKeeper> viewedimg;
-    viewedimg.push_back(drawnCam1[0]);
-    viewedimg.push_back(drawnCam2[0]);
+		drawnCam2[1].getFeatureFlags(drawnCam1[0],flagCam1);
+		drawnCam1[1].getFeatureFlags(drawnCam2[0],flagCam2);
+	
+		drawer.DrawRoute(drawnCam1.begin(),drawnCam1.end(),drawnCam1[0].getIMG(),flagCam1);
+		drawer.DrawRoute(drawnCam2.begin(),drawnCam2.end(),drawnCam2[0].getIMG(),flagCam2);
 
-    imgv.showImgsbyLine(viewedimg.begin(),viewedimg.end(),preimg.begin(),preimg.end());
+		std::vector<ImageKeeper> viewedimg;
+		viewedimg.push_back(drawnCam1[0]);
+		viewedimg.push_back(drawnCam2[0]);
 
-    checkCommand(&i,cv::waitKey(0));
+		imgv.showImgsbyLine(viewedimg.begin(),viewedimg.end(),preimg.begin(),preimg.end());
+
+		std::cout << "Cam1:" << viewedimg[0].getName() << " Cam2:" << viewedimg[1].getName() << std::endl;
+
+		checkCommand(&i,cv::waitKey(0));
     
-  }
+	}
         
   return 0;
 }
