@@ -65,8 +65,8 @@ public:
 		
 		//std::cout << currentID << std::endl;
 		
-		if(currentID % 10 == 0)
-		  std::cout << name << std::endl;
+		if(currentID % 1 == 0)
+		  //std::cout << name << std::endl;
 
 		imbuff.setName(name);
 		imbuff.setIDbyName();
@@ -138,9 +138,12 @@ public:
 		}
 	}
 
-	void setFeaturePoint(int startline,int endline){
+	int setFeaturePoint(int startline,int endline){
 
 		//featurePoints.reserve(endline-startline+1);
+
+		if(endline - startline == 0)
+			return 0;
 
 	  std::ifstream ifs(nvmpass.c_str());
 	  std::string buff;
