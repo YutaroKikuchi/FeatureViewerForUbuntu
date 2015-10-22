@@ -145,6 +145,104 @@ int main(){
 
 int main(int argc ,char* argv[]){
   
+	int numpic=0;
+
+	std::string nvmpath = NVM;
+	std::string imgpath = IMG;
+
+	ImageViewer imgv(CAM,LGH);
+	Reader reader(CAM,IMG,NVM);
+
+	Drawer drawer;
+
+	LineReader lr(NVM);
+
+	lr.setLineNo();
+	lr.showLines();
+
+	for(int i=0;i<lr.endFeature.size();i++){
+		reader.setImg(lr.startImg[i],lr.endImg[i]);
+		reader.setFeaturePoint(lr.startFeature[i],lr.endFeature[i]);
+	}
+
+	for(int i=0;i<lr.endFeature.size();i++){
+		numpic += lr.endImg[i] - lr.startImg[i] + 1;
+	}
+
+	std::cout << "Num of Imgs:" << numpic << std::endl;
+
+	cv::namedWindow("hoge",CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
+
+	for(int i=LGH;i<numpic;i++){
+
+		std::vector<std::vector<ImageKeeper>> drawnCam(CAM);
+
+		for(int j=1;j<=CAM;j++){
+			for(int k=0 ;k<LGH;k++)
+				drawnCam[j-1].push_back(reader.getIKbyID(j,i-k));
+		}
+		
+		bool contflag = true;
+		for(int j=0;j<CAM;j++){
+			contflag = contflag && (drawnCam[j][0].getID() == -1);
+		}
+
+		if(contflag == true){
+			continue;
+		}else{
+
+			for(int j=0;j<CAM;j++){
+				if(drawnCam[j][0].getID() == -1){
+					ImageKeeper buff(-1,0,"No Image",cv::Mat::zeros(1080,1920,CV_8UC3));
+					drawnCam[j][0] = buff;
+				}
+				
+			}
+		}
+
+		std::vector< std::vector<bool> > flagCam(CAM);
+
+		for(int j=0;j<CAM;j++){
+
+			drawer.DrawPoints(drawnCam[j][0]);
+			flagCam[j].reserve(drawnCam[j][0].getPointsSize());
+		}
+
+		for(int j=0;j<CAM;j++){
+			for(int k=0;k<CAM;k++){
+                if(j!=k){
+                    drawnCam[k][1].getFeatureFlags(drawnCam[j][0],flagCam[j]);
+                }
+            }
+			
+		}
+
+        for(int j=0;j<CAM;j++){
+            drawer.DrawRoute(drawnCam[j].begin(),drawnCam[j].end(),drawnCam[j][0].getIMG(),flagCam[j]);
+        }
+
+        std::vector<ImageKeeper> preimg;
+        std::vector<ImageKeeper> viewedimg;
+
+        for(int j=0;j<CAM;j++){
+            preimg.push_back(drawnCam[j][1]);
+            viewedimg.push_back(drawnCam[j][0]);
+        }
+
+        //std::cout << "Cam1.name:" << viewedimg[0].getName() << " Cam1.cols:" << viewedimg[0].getCols() << " Cam1.rows:" << viewedimg[0].getRows() << std::endl;
+        //std::cout << "Cam2.name:" << viewedimg[1].getName() << " Cam2.cols:" << viewedimg[1].getCols() << " Cam2.rows:" << viewedimg[1].getRows() << std::endl;
+
+        imgv.showImgsbyLine(viewedimg.begin(),viewedimg.end(),preimg.begin(),preimg.end());
+        
+        checkCommand(&i,cv::waitKey(0));
+	}
+
+    return 0;
+}
+
+/*
+int main(int argc ,char* argv[]){
+  
 	int numpic;
 
 	std::string nvmpath = NVM;
@@ -165,9 +263,6 @@ int main(int argc ,char* argv[]){
 	reader.setImg(lr.startImg[1],lr.endImg[1]);
 	reader.setFeaturePoint(lr.startFeature[1],lr.endFeature[1]);
 
-  
-  
-
 	numpic = lr.endImg[0] - lr.startImg[0]+1 + lr.endImg[1]-lr.startImg[1]+1;
 
 	cv::namedWindow("hoge",CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
@@ -184,7 +279,7 @@ int main(int argc ,char* argv[]){
 /*
     std::cout <<"cam1.row="<<drawnCam1[0].getRows()<<" cam1.col="<< drawnCam1[0].getCols() <<" cam2.row=" << drawnCam2[0].getRows() << " cam2.col=" << drawnCam2[0].getCols()<<std::endl;
 */
-
+/*
 		if(drawnCam1[0].getID() == -1 && drawnCam2[0].getID() == -1){
 			continue;
 	    	}else{
@@ -235,3 +330,4 @@ int main(int argc ,char* argv[]){
         
   return 0;
 }
+*/
