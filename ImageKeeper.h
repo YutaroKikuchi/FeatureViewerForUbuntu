@@ -152,7 +152,8 @@ public:
 				if(isHaveFeature(ik.getFeatureID(j)) == true){
 					flags[j] = true;
 				}else{
-					flags[j] = false;
+					if(flags[j] != true)
+						flags[j] = false;
 				}
 			}
 		}
