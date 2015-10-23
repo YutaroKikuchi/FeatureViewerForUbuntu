@@ -24,8 +24,6 @@ public:
 	  std::ifstream ifs(nvmpath.c_str());
 		std::string buff;
 
-		std::cout << "hogehoge" << std::endl;
-
 		if(ifs.fail()){
 		  std::cout << "file is failed" << std::endl;
 		}else{
