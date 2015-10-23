@@ -28,6 +28,29 @@ void checkCommand(int* output,char key){
 	}
 }
 
+int readPath(char *in, std::string *imgpath, std::string *nvmpath,int *cam, int *lengh){
+
+	std::ifstream ifs(in);
+	std::string buff;
+
+	if(ifs.fail()){
+		std::cout << "File Not Found" << std::endl;
+		return 0;
+	}else{
+
+		std::getline(ifs,buff);
+		*imgpath = buff;
+		std::getline(ifs,buff);
+		*nvmpath = buff;
+		std::getline(ifs,buff);
+		*cam = std::stoi(buff);
+		std::getline(ifs,buff);
+		*lengh = std::stoi(buff);
+	}
+
+	return 1;
+}
+
 
 /*
 int main(){
@@ -144,18 +167,28 @@ int main(){
 
 
 int main(int argc ,char* argv[]){
-  
+
+	if(argc != 2){
+		std::cout << "Invalid Argument !!!" << std::endl;
+		return 0;
+	}
+
+	std::string nvmpath;
+	std::string imgpath;
+	int lengh,cam;
+
+	if(readPath(*(argv+1),&imgpath,&nvmpath,&cam,&lengh)==0){
+		return 0;
+	}
+
 	int numpic=0;
 
-	std::string nvmpath = NVM;
-	std::string imgpath = IMG;
-
 	ImageViewer imgv(CAM,LGH);
-	Reader reader(CAM,IMG,NVM);
+	Reader reader(CAM,imgpath,nvmpath);
 
 	Drawer drawer;
 
-	LineReader lr(NVM);
+	LineReader lr(nvmpath);
 
 	lr.setLineNo();
 	lr.showLines();
@@ -175,15 +208,15 @@ int main(int argc ,char* argv[]){
 
 	for(int i=LGH;i<numpic;i++){
 
-		std::vector<std::vector<ImageKeeper>> drawnCam(CAM);
+		std::vector<std::vector<ImageKeeper>> drawnCam(cam);
 
-		for(int j=1;j<=CAM;j++){
-			for(int k=0 ;k<LGH;k++)
+		for(int j=1;j<=cam;j++){
+			for(int k=0 ;k<lengh;k++)
 				drawnCam[j-1].push_back(reader.getIKbyID(j,i-k));
 		}
 		
 		bool contflag = true;
-		for(int j=0;j<CAM;j++){
+		for(int j=0;j<cam;j++){
 			contflag = contflag && (drawnCam[j][0].getID() == -1);
 		}
 
@@ -191,7 +224,7 @@ int main(int argc ,char* argv[]){
 			continue;
 		}else{
 
-			for(int j=0;j<CAM;j++){
+			for(int j=0;j<cam;j++){
 				if(drawnCam[j][0].getID() == -1){
 					ImageKeeper buff(-1,0,"No Image",cv::Mat::zeros(1080,1920,CV_8UC3));
 					drawnCam[j][0] = buff;
@@ -200,16 +233,16 @@ int main(int argc ,char* argv[]){
 			}
 		}
 
-		std::vector< std::vector<bool> > flagCam(CAM);
+		std::vector< std::vector<bool> > flagCam(cam);
 
-		for(int j=0;j<CAM;j++){
+		for(int j=0;j<cam;j++){
 
 			drawer.DrawPoints(drawnCam[j][0]);
 			flagCam[j].reserve(drawnCam[j][0].getPointsSize());
 		}
 
-		for(int j=0;j<CAM;j++){
-			for(int k=0;k<CAM;k++){
+		for(int j=0;j<cam;j++){
+			for(int k=0;k<cam;k++){
                 if(j!=k){
                     drawnCam[k][1].getFeatureFlags(drawnCam[j][0],flagCam[j]);
                 }
@@ -217,14 +250,14 @@ int main(int argc ,char* argv[]){
 			
 		}
 
-        for(int j=0;j<CAM;j++){
+        for(int j=0;j<cam;j++){
             drawer.DrawRoute(drawnCam[j].begin(),drawnCam[j].end(),drawnCam[j][0].getIMG(),flagCam[j]);
         }
 
         std::vector<ImageKeeper> preimg;
         std::vector<ImageKeeper> viewedimg;
 
-        for(int j=0;j<CAM;j++){
+        for(int j=0;j<cam;j++){
             preimg.push_back(drawnCam[j][1]);
             viewedimg.push_back(drawnCam[j][0]);
         }
