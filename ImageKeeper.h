@@ -152,14 +152,12 @@ public:
 	}
 
 	int getFeatureFlags(ImageKeeper ik,std::vector<bool> &flags){
-		for(int i=0;i<points.size();i++){
-			for(int j=0;j<ik.getPointsSize();j++){
-				if(isHaveFeature(ik.getFeatureID(j)) == true){
-					flags[j] = true;
-				}else{
-					if(flags[j] != true)
-						flags[j] = false;
-				}
+		for(int j=0;j<ik.getPointsSize();j++){
+			if(isHaveFeature(ik.getFeatureID(j)) == true){
+				flags[j] = true;
+			}else{
+				if(flags[j] != true)
+					flags[j] = false;
 			}
 		}
 
