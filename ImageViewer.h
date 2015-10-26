@@ -18,6 +18,7 @@ private:
 	int DrawLinesinLine(std::vector<ImageKeeper>::iterator begin,std::vector<ImageKeeper>::iterator end,std::vector<ImageKeeper>::iterator prebegin,std::vector<ImageKeeper>::iterator preend,cv::Mat out);
 	int matchPoint(ImageKeeper from,ImageKeeper to,std::vector<cv::Point2f> &frompoints,std::vector<cv::Point2f> &topoints);
 	int combineImgTheta(std::vector<ImageKeeper>::iterator begin,std::vector<ImageKeeper>::iterator end,cv::Mat out);
+	int DrawLinesTheta(std::vector<ImageKeeper>::iterator begin,std::vector<ImageKeeper>::iterator end,std::vector<ImageKeeper>::iterator prebegin,std::vector<ImageKeeper>::iterator preend,cv::Mat out);
 
 public:
 	ImageViewer(int numcam,int len){
@@ -58,11 +59,14 @@ public:
 		return 0;
 	}
 
-	int showImgsTheta(std::vector<ImageKeeper>::iterator begin,std::vector<ImageKeeper>::iterator end){
+	int showImgsTheta(std::vector<ImageKeeper>::iterator begin,std::vector<ImageKeeper>::iterator end,std::vector<ImageKeeper>::iterator prebegin,std::vector<ImageKeeper>::iterator preend){
+		
 
 		cv::Mat output(cv::Size(begin[0].getIMG().cols*6,begin[0].getIMG().rows*3),CV_8UC3);
 
 		combineImgTheta(begin,end,output);
+
+		DrawLinesTheta(begin,end,prebegin,preend,output);
 
 		cv::imshow("hoge",output);
 		return 1;
@@ -217,6 +221,130 @@ int ImageViewer::DrawLinesinLine(std::vector<ImageKeeper>::iterator begin,std::v
 		  for(int k=0;k<frompoints.size();k++){
 		    cv::Point2f from = frompoints[k]+cv::Point2f(col*i,0.0);
 		    cv::Point2f to = topoints[k]+cv::Point2f(col*j,0.0);
+		    
+		    cv::line(out,from,to,cv::Scalar(0.0,0.0,200.0),2,CV_AA);
+		  }
+		}
+
+	}
+	return 0;
+}
+
+int ImageViewer::DrawLinesTheta(std::vector<ImageKeeper>::iterator begin,std::vector<ImageKeeper>::iterator end,std::vector<ImageKeeper>::iterator prebegin,std::vector<ImageKeeper>::iterator preend,cv::Mat out){
+
+	float col = (float)begin[0].getCols(); float row = (float)begin[0].getRows();
+
+	for(int i=0;i<end-begin;i++){
+
+		for(int j=0;j<end-begin;j++){
+		  if(i==j){
+		    continue;
+		  }
+		  std::vector<cv::Point2f> frompoints,topoints;
+		  matchPoint(prebegin[i],begin[j],frompoints,topoints);
+		 
+		/* 
+
+		  if(frompoints.size()>0 && topoints.size()>0){
+
+		    std::cout << "Match" << std::endl;
+
+		  }else{
+
+		    std::cout << "no Match" << std::endl;
+
+		  }
+
+
+
+		  std::cout << "begin[" << i << "]  " << "begin[" << j << "]" << std::endl;*/
+
+		  for(int k=0;k<frompoints.size();k++){
+		    cv::Point2f offsetFrom,offsetTo;
+		    
+		    switch(i){
+			case 0:
+				offsetFrom = cv::Point2f(col,row);
+				break;
+			case 1:
+				offsetFrom = cv::Point2f(col*2,row);
+				break;
+			case 2:
+				offsetFrom = cv::Point2f(col,row*2);
+				break;
+			case 3:
+				offsetFrom = cv::Point2f(0,row);
+				break;
+			case 4:
+				offsetFrom = cv::Point2f(col,0);
+				break;
+			case 5:
+				offsetFrom = cv::Point2f(0,0);
+				break;
+			case 6:
+				offsetFrom = cv::Point2f(col*4,row);
+				break;
+			case 7:
+				offsetFrom = cv::Point2f(col*5,row);
+				break;
+			case 8:
+				offsetFrom = cv::Point2f(col*4,row*2);
+				break;
+			case 9:
+				offsetFrom = cv::Point2f(col*3,row);
+				break;
+			case 10:
+				offsetFrom = cv::Point2f(col*3,0);
+				break;
+			case 11:
+				offsetFrom = cv::Point2f(col*4,0);
+				break;
+			default:
+				break;
+		    }
+
+		    switch(j){
+			case 0:
+				offsetTo = cv::Point2f(col,row);
+				break;
+			case 1:
+				offsetTo = cv::Point2f(col*2,row);
+				break;
+			case 2:
+				offsetTo = cv::Point2f(col,row*2);
+				break;
+			case 3:
+				offsetTo = cv::Point2f(0,row);
+				break;
+			case 4:
+				offsetTo = cv::Point2f(col,0);
+				break;
+			case 5:
+				offsetTo = cv::Point2f(0,0);
+				break;
+			case 6:
+				offsetTo = cv::Point2f(col*4,row);
+				break;
+			case 7:
+				offsetTo = cv::Point2f(col*5,row);
+				break;
+			case 8:
+				offsetTo = cv::Point2f(col*4,row*2);
+				break;
+			case 9:
+				offsetTo = cv::Point2f(col*3,row);
+				break;
+			case 10:
+				offsetTo = cv::Point2f(col*3,0);
+				break;
+			case 11:
+				offsetTo = cv::Point2f(col*4,0);
+				break;
+			default:
+				break;
+		    }
+		    cv::Point2f from = frompoints[k]+offsetFrom;
+		    cv::Point2f to = topoints[k]+offsetTo;
 		    
 		    cv::line(out,from,to,cv::Scalar(0.0,0.0,200.0),2,CV_AA);
 		  }
