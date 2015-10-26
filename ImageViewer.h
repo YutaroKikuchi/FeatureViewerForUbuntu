@@ -5,6 +5,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <iostream>
 #include <fstream>
+#include <stdio.h>
 #include "ImageKeeper.h"
 
 
@@ -60,7 +61,6 @@ public:
 	}
 
 	int showImgsTheta(std::vector<ImageKeeper>::iterator begin,std::vector<ImageKeeper>::iterator end,std::vector<ImageKeeper>::iterator prebegin,std::vector<ImageKeeper>::iterator preend){
-		
 
 		cv::Mat output(cv::Size(begin[0].getIMG().cols*6,begin[0].getIMG().rows*3),CV_8UC3);
 
@@ -122,8 +122,6 @@ int ImageViewer::combineImgTheta(std::vector<ImageKeeper>::iterator begin,std::v
 	rect.width = begin[0].getIMG().cols;
 	rect.height = begin[0].getIMG().rows;
 
-	cv::Mat black = cv::Mat::zeros(rect.width,rect.height,CV_8UC3);
-
 	for(int i=0;i<3;i++){
 
 		for(int j=0;j<6;j++){
@@ -148,7 +146,7 @@ int ImageViewer::combineImgTheta(std::vector<ImageKeeper>::iterator begin,std::v
 							begin[11].getIMG().copyTo(roi);
 							break;
 						default:
-							roi = black;
+							roi = cv::Mat::zeros(rect.width,rect.height,CV_8UC3);;
 					}
 					break;
 				case 1:
@@ -172,7 +170,7 @@ int ImageViewer::combineImgTheta(std::vector<ImageKeeper>::iterator begin,std::v
 							begin[7].getIMG().copyTo(roi);
 							break;
 						default:
-							roi = black;
+							roi = cv::Mat::zeros(rect.width,rect.height,CV_8UC3);;
 					}
 					break;
 				case 2:
@@ -184,7 +182,7 @@ int ImageViewer::combineImgTheta(std::vector<ImageKeeper>::iterator begin,std::v
 							begin[8].getIMG().copyTo(roi);
 							break;
 						default:
-							roi = black;
+							roi = cv::Mat::zeros(rect.width,rect.height,CV_8UC3);;
 					}
 					break;
 				default:
@@ -346,7 +344,17 @@ int ImageViewer::DrawLinesTheta(std::vector<ImageKeeper>::iterator begin,std::ve
 		    cv::Point2f from = frompoints[k]+offsetFrom;
 		    cv::Point2f to = topoints[k]+offsetTo;
 		    
-		    cv::line(out,from,to,cv::Scalar(0.0,0.0,200.0),2,CV_AA);
+
+		    if(rand()%3 == 0){
+		    	cv::line(out,from,to,cv::Scalar(0.0,0.0,200.0),2,CV_AA);
+		    }else if(rand()%3 == 1){
+			cv::line(out,from,to,cv::Scalar(0.0,200.0,0.0),2,CV_AA);
+		    }else{
+			cv::line(out,from,to,cv::Scalar(200.0,0.0,0.0),2,CV_AA);
+		    }
+
+
+			
 		  }
 		}
 
