@@ -260,32 +260,32 @@ int main(int argc ,char* argv[]){
                			if(j!=k){
                     			drawnCam[k][1].getFeatureFlags(drawnCam[j][0],flagCam[j]);
                 		}
-            	}
-			
-	}
+            		}
+		}
 
-        for(int j=0;j<cam;j++){
-            drawer.DrawRoute(drawnCam[j].begin(),drawnCam[j].end(),drawnCam[j][0].getIMG(),flagCam[j]);
-        }
+		for(int j=0;j<cam;j++){
+			drawer.DrawRoute(drawnCam[j].begin(),drawnCam[j].end(),drawnCam[j][0].getIMG(),flagCam[j]);
+		}
 
-        std::vector<ImageKeeper> preimg;
-        std::vector<ImageKeeper> viewedimg;
+		std::vector<ImageKeeper> preimg;
+		std::vector<ImageKeeper> viewedimg;
 
-        for(int j=0;j<cam;j++){
-            preimg.push_back(drawnCam[j][1]);
-            viewedimg.push_back(drawnCam[j][0]);
-        }
-
+		for(int j=0;j<cam;j++){
+			preimg.push_back(drawnCam[j][1]);
+			viewedimg.push_back(drawnCam[j][0]);
+		}
+/*
 	for(int j=0;j<cam;j++){
 		std::cout << "Cam1.name:" << viewedimg[j].getName() << std::endl;
 	}
+*/
 
-        imgv.showImgsTheta(viewedimg.begin(),viewedimg.end(),preimg.begin(),preimg.end());
-        
-        checkCommand(&i,cv::waitKey(0));
+		imgv.showImgsTheta(viewedimg.begin(),viewedimg.end(),preimg.begin(),preimg.end());
+
+		checkCommand(&i,cv::waitKey(0));
 	}
 
-    return 0;
+	return 0;
 }
 
 /*
