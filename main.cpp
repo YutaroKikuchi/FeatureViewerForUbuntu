@@ -1,6 +1,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <iostream>
+#include <string>
 
 #include "ImageKeeper.h"
 #include "Drawer.h"
@@ -12,6 +13,9 @@
 
 #define LGH 4
 #define CAM 2
+
+#define W 480
+#define H 480
 
 
 #define NVM "./multicam/nvm/passage6.nvm"
@@ -28,7 +32,7 @@ void checkCommand(int* output,char key){
 	}
 }
 
-int readPath(char *in, std::string *imgpath, std::string *nvmpath,int *cam, int *lengh){
+int readPath(char* in, std::string *imgpath, std::string *nvmpath,int *cam, int *lengh){
 
 	std::ifstream ifs(in);
 	std::string buff;
@@ -51,6 +55,20 @@ int readPath(char *in, std::string *imgpath, std::string *nvmpath,int *cam, int 
 	return 1;
 }
 
+/*
+int main(){
+	ImageViewer imgv(12,4);
+
+	std::vector<ImageKeeper> lena(12);
+	for(int i=0;i<12;i++){
+		ImageKeeper buff(0,i,"lena.jpg",cv::imread("./lena.jpg",1));
+		lena[i] = buff;
+	}
+
+	cv::namedWindow("hoge",CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
+	imgv.showImgsTheta(lena.begin(),lena.end());
+	cv::waitKey(0);
+}*/
 
 /*
 int main(){
@@ -168,7 +186,7 @@ int main(){
 
 int main(int argc ,char* argv[]){
 
-	if(argc != 2){
+	if(false){
 		std::cout << "Invalid Argument !!!" << std::endl;
 		return 0;
 	}
@@ -177,14 +195,14 @@ int main(int argc ,char* argv[]){
 	std::string imgpath;
 	int lengh,cam;
 
-	if(readPath(*(argv+1),&imgpath,&nvmpath,&cam,&lengh)==0){
+	if(readPath("./input.txt",&imgpath,&nvmpath,&cam,&lengh)==0){
 		return 0;
 	}
 
 	int numpic=0;
 
-	ImageViewer imgv(CAM,LGH);
-	Reader reader(CAM,imgpath,nvmpath);
+	ImageViewer imgv(cam,lengh);
+	Reader reader(cam,imgpath,nvmpath);
 
 	Drawer drawer;
 
@@ -204,9 +222,11 @@ int main(int argc ,char* argv[]){
 
 	std::cout << "Num of Imgs:" << numpic << std::endl;
 
+	std::cout << "Name:" << reader.ik[lengh].getName() << " Row:" << reader.ik[lengh].getRows() << " Col" << reader.ik[lengh].getCols() << std::endl;
+
 	cv::namedWindow("hoge",CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
 
-	for(int i=LGH;i<numpic;i++){
+	for(int i=lengh;i<(numpic/12+1);i++){
 
 		std::vector<std::vector<ImageKeeper>> drawnCam(cam);
 
@@ -220,18 +240,12 @@ int main(int argc ,char* argv[]){
 			contflag = contflag && (drawnCam[j][0].getID() == -1);
 		}
 
-		if(contflag == true){
-			continue;
-		}else{
-
-			for(int j=0;j<cam;j++){
-				if(drawnCam[j][0].getID() == -1){
-					ImageKeeper buff(-1,0,"No Image",cv::Mat::zeros(1080,1920,CV_8UC3));
-					drawnCam[j][0] = buff;
-				}
-				
+		for(int j=0;j<cam;j++){
+			if(drawnCam[j][0].getID() == -1){
+				ImageKeeper buff(-1,0,"No Image",cv::Mat::zeros(H,W,CV_8UC3));
+				drawnCam[j][0] = buff;
 			}
-		}
+		} 
 
 		std::vector< std::vector<bool> > flagCam(cam);
 
@@ -243,12 +257,12 @@ int main(int argc ,char* argv[]){
 
 		for(int j=0;j<cam;j++){
 			for(int k=0;k<cam;k++){
-                if(j!=k){
-                    drawnCam[k][1].getFeatureFlags(drawnCam[j][0],flagCam[j]);
-                }
-            }
+               			if(j!=k){
+                    			drawnCam[k][1].getFeatureFlags(drawnCam[j][0],flagCam[j]);
+                		}
+            	}
 			
-		}
+	}
 
         for(int j=0;j<cam;j++){
             drawer.DrawRoute(drawnCam[j].begin(),drawnCam[j].end(),drawnCam[j][0].getIMG(),flagCam[j]);
@@ -262,10 +276,11 @@ int main(int argc ,char* argv[]){
             viewedimg.push_back(drawnCam[j][0]);
         }
 
-        //std::cout << "Cam1.name:" << viewedimg[0].getName() << " Cam1.cols:" << viewedimg[0].getCols() << " Cam1.rows:" << viewedimg[0].getRows() << std::endl;
-        //std::cout << "Cam2.name:" << viewedimg[1].getName() << " Cam2.cols:" << viewedimg[1].getCols() << " Cam2.rows:" << viewedimg[1].getRows() << std::endl;
+	for(int j=0;j<cam;j++){
+		std::cout << "Cam1.name:" << viewedimg[j].getName() << std::endl;
+	}
 
-        imgv.showImgsbyLine(viewedimg.begin(),viewedimg.end(),preimg.begin(),preimg.end());
+        imgv.showImgsTheta(viewedimg.begin(),viewedimg.end(),preimg.begin(),preimg.end());
         
         checkCommand(&i,cv::waitKey(0));
 	}

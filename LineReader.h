@@ -54,6 +54,7 @@ public:
 					startFeature.push_back(currentline+1);
 				}else if(!(isStart(size,presize)==true) && (isEnd(size,presize)==true) && (areano==1)){
 				  std::cout << "endFeature set" << std::endl;
+				  
 					endFeature.push_back(currentline-1);
 					areano = 0;
 				}
