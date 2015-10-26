@@ -9,7 +9,7 @@
 #include "./ImageKeeper.h"
 #include "./FeaturePoint.h"
 
-#define FREQ 10
+#define FREQ 1
 
 class Reader{
 
