@@ -65,7 +65,7 @@ public:
 		
 		//std::cout << currentID << std::endl;
 		
-		if(currentID % 1 == 0)
+		//if(currentID % 1 == 0)
 		  //std::cout << name << std::endl;
 
 		imbuff.setName(name);
@@ -78,6 +78,7 @@ public:
 	      }
 				
 	    }
+		
 	  }
 
 	  std::sort(imgLink.begin(),imgLink.end());
@@ -310,10 +311,11 @@ public:
 
 std::string Reader::getfileName(std::string in){
 
-	size_t pos1 = in.find("\\");
-	size_t pos2 = in.find("\t");
+	//size_t pos1 = in.find("\\");
+	size_t pos1 = 0;
+	size_t pos2 = in.find(".")+4;
 
-	std::string name = in.substr(pos1+1,pos2-pos1-1);
+	std::string name = in.substr(pos1,pos2-pos1);
 
 	return name;
 }
