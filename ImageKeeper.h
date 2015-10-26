@@ -37,6 +37,9 @@ public:
 		camID = camid;
 		name = Name;
 		img = image;
+
+		rows = image.rows;
+		cols = image.cols;
 	}
 	void setName(std::string in){
 		name = in;
@@ -50,17 +53,19 @@ public:
 
        
 
-	  size_t camIDpos1 = name.find("!");
-	  size_t camIDpos2 = name.rfind("!");
+	  //size_t camIDpos1 = name.find("!");
+	  size_t camIDpos1 = name.find("-");
+	  size_t camIDpos2 = name.rfind(".");
 
-	  size_t IDpos1 = camIDpos2;
-	  size_t IDpos2 = name.find(".");
-
-	  // std::cout << "camID:" << name.substr(camIDpos1+1,camIDpos2-camIDpos1-1) << std::endl;
-	  //std::cout << "ID:" << name.substr(IDpos1+1,IDpos2-IDpos1-1) << std::endl;
+	  size_t IDpos1 = 0;
+	  size_t IDpos2 = camIDpos1;
+/*
+	  std::cout << "camID:" << name.substr(camIDpos1+1,camIDpos2-camIDpos1) << std::endl;
+	  std::cout << "ID:" << name.substr(IDpos1,IDpos2-IDpos1) << std::endl;
+*/
 
 	  camID = std::stoi(name.substr(camIDpos1+1,camIDpos2-camIDpos1-1));
-	  ID = std::stoi(name.substr(IDpos1+1,IDpos2-IDpos1-1));
+	  ID = std::stoi(name.substr(IDpos1,IDpos2-IDpos1));
 	  
 	  return 0;
 
