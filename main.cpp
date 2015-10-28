@@ -2,6 +2,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <iostream>
 #include <string>
+#include <string.h>
 
 #include "ImageKeeper.h"
 #include "Drawer.h"
@@ -41,15 +42,27 @@ int readPath(char* in, std::string *imgpath, std::string *nvmpath,int *cam, int 
 		std::cout << "File Not Found" << std::endl;
 		return 0;
 	}else{
+		while(std::getline(ifs,buff)){
+			if(strstr(buff.c_str(),"data_dir")){
+				size_t pos1 = buff.find("\""), pos2 = buff.rfind("\"");
+				*imgpath = buff.substr(pos1 + 1, pos2 - pos1 - 1);
+			}
 
-		std::getline(ifs,buff);
-		*imgpath = buff;
-		std::getline(ifs,buff);
-		*nvmpath = buff;
-		std::getline(ifs,buff);
-		*cam = std::stoi(buff);
-		std::getline(ifs,buff);
-		*lengh = std::stoi(buff);
+			if(strstr(buff.c_str(),"nvm_dir")){
+				size_t pos1 = buff.find("\""), pos2 = buff.rfind("\"");
+				*nvmpath = buff.substr(pos1 + 1, pos2 - pos1 - 1);
+			}
+
+			if(strstr(buff.c_str(),"pertition_number")){
+				size_t pos1 = buff.find("\""), pos2 = buff.rfind("\"");
+				*cam = std::stoi(buff.substr(pos1 + 1, pos2 - pos1 - 1));
+			}
+
+			if(strstr(buff.c_str(),"rought_lengh")){
+				size_t pos1 = buff.find("\""), pos2 = buff.rfind("\"");
+				*lengh = std::stoi(buff.substr(pos1 + 1, pos2 - pos1 - 1));
+			}
+		}
 	}
 
 	return 1;
