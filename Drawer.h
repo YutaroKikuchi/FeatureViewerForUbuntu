@@ -32,10 +32,10 @@ public:
 	cv::Mat DrawPoints(ImageKeeper img){
 		cv::Mat out;
 
-		int pointSize = img.getPointsSize();
+		int pointSize = img.getFeaturesSize();
 
 		for(int i=0;i<pointSize;i++){
-			out = DrawPoint(img.getPoint(i),img.getIMG());
+			out = DrawPoint(img.getFeature(i),img.getIMG());
 		}
 
 		return out;
@@ -43,13 +43,13 @@ public:
 
 	void DrawRoute(ImageKeeper current,ImageKeeper prev, cv::Mat out){
 
-		int currentID = current.getID(), curPSize = current.getPointsSize();
-		int prevID = prev.getID(),prevPSize = prev.getPointsSize();
+		int currentID = current.getID(), curPSize = current.getFeaturesSize();
+		int prevID = prev.getID(),prevPSize = prev.getFeaturesSize();
 
 		for(int i=0;i<curPSize;i++){
 			for(int j=0;j<prevPSize;j++){
 				if(current.getFeatureID(i) == prev.getFeatureID(j)){
-					cv::line(out,current.getPoint(i),prev.getPoint(j),cv::Scalar(0,0,200),2,8);
+					cv::line(out,current.getFeature(i),prev.getFeature(j),cv::Scalar(0,0,200),2,8);
 				}
 			}
 		}
@@ -58,14 +58,14 @@ public:
 
 	void DrawRoute(std::vector<ImageKeeper>::iterator iksBegin,std::vector<ImageKeeper>::iterator iksEnd,cv::Mat out){
 
-		int currentID = iksBegin[0].getID(), curPSize = iksBegin[0].getPointsSize();
+		int currentID = iksBegin[0].getID(), curPSize = iksBegin[0].getFeaturesSize();
 
 		for(int i=0;i<curPSize;i++){
 			int toFID = iksBegin[0].getFeatureID(i);
 
 			for(int j=0;iksBegin+j+1!=iksEnd;j++){
-				cv::Point2f to = iksBegin[j].getPointID(toFID);
-				cv::Point2f from = iksBegin[j+1].getPointID(toFID);
+				cv::Point2f to = iksBegin[j].getFeaturebyID(toFID);
+				cv::Point2f from = iksBegin[j+1].getFeaturebyID(toFID);
 				if(from == cv::Point2f(0.0,0.0)){
 					break;
 				}else{
@@ -78,7 +78,7 @@ public:
 
 	void DrawRoute(std::vector<ImageKeeper>::iterator iksBegin,std::vector<ImageKeeper>::iterator iksEnd,cv::Mat out,std::vector<bool> &flags){
 
-		int currentID = iksBegin[0].getID(), curPSize = iksBegin[0].getPointsSize();
+		int currentID = iksBegin[0].getID(), curPSize = iksBegin[0].getFeaturesSize();
 
 		for(int i=0;i<curPSize;i++){
 			int toFID = iksBegin[0].getFeatureID(i);
@@ -86,8 +86,8 @@ public:
 			if(flags[i]==false){
 
 				for(int j=0;iksBegin+j+1!=iksEnd;j++){
-					cv::Point2f to = iksBegin[j].getPointID(toFID);
-					cv::Point2f from = iksBegin[j+1].getPointID(toFID);
+					cv::Point2f to = iksBegin[j].getFeaturebyID(toFID);
+					cv::Point2f from = iksBegin[j+1].getFeaturebyID(toFID);
 					if(from == cv::Point2f(0.0,0.0)){
 						break;
 					}else{
@@ -99,8 +99,8 @@ public:
 	}
 
 	cv::Mat DrawLines(ImageKeeper prev,ImageKeeper current){
-		int currentID = current.getID(),curPSize = current.getPointsSize();
-		int prevID = prev.getID(),prevPSize = prev.getPointsSize();
+		int currentID = current.getID(),curPSize = current.getFeaturesSize();
+		int prevID = prev.getID(),prevPSize = prev.getFeaturesSize();
 
 		cv::Mat combineImg(cv::Size(current.getIMG().cols*2,current.getIMG().rows),CV_8UC3);
 
@@ -113,7 +113,7 @@ public:
 		for(int i=0;i<curPSize;i++){
 			for(int j=0;j<prevPSize;j++){
 				if(current.getFeatureID(i)==prev.getFeatureID(j)){
-					DrawLine(combineImg,current.getPoint(i)+offset,prev.getPoint(j));
+					DrawLine(combineImg,current.getFeature(i)+offset,prev.getFeature(j));
 				}
 			}
 		}
@@ -122,8 +122,8 @@ public:
 	}
 
 	cv::Mat TestCombine(ImageKeeper prev,ImageKeeper current){
-		int currentID = current.getID(),curPSize = current.getPointsSize();
-		int prevID = prev.getID(),prevPSize = prev.getPointsSize();
+		int currentID = current.getID(),curPSize = current.getFeaturesSize();
+		int prevID = prev.getID(),prevPSize = prev.getFeaturesSize();
 
 		cv::Mat combineImg(cv::Size(current.getIMG().cols*2,current.getIMG().rows),CV_8UC3);
 

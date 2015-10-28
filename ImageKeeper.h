@@ -22,9 +22,8 @@ private:
 	cv::Mat img;
 	int camID;
 	int ID;
-	int symID;
 	std::string name;
-	std::vector<Feature> points;
+	std::vector<Feature> features;
 	int rows,cols;
 public:
 
@@ -41,6 +40,21 @@ public:
 		rows = image.rows;
 		cols = image.cols;
 	}
+
+	int setIDbyName(){
+
+		size_t camIDpos1 = name.find("-");
+		size_t camIDpos2 = name.rfind(".");
+
+		size_t IDpos1 = 0;
+		size_t IDpos2 = camIDpos1;
+
+		camID = std::stoi(name.substr(camIDpos1+1,camIDpos2-camIDpos1-1));
+		ID = std::stoi(name.substr(IDpos1,IDpos2-IDpos1));
+	  
+		return 0;
+	}
+
 	void setName(std::string in){
 		name = in;
 	}
@@ -49,34 +63,12 @@ public:
 		return name;
 	}
 
-	int setIDbyName(){
-
-       
-
-	  //size_t camIDpos1 = name.find("!");
-	  size_t camIDpos1 = name.find("-");
-	  size_t camIDpos2 = name.rfind(".");
-
-	  size_t IDpos1 = 0;
-	  size_t IDpos2 = camIDpos1;
-/*
-	  std::cout << "camID:" << name.substr(camIDpos1+1,camIDpos2-camIDpos1) << std::endl;
-	  std::cout << "ID:" << name.substr(IDpos1,IDpos2-IDpos1) << std::endl;
-*/
-
-	  camID = std::stoi(name.substr(camIDpos1+1,camIDpos2-camIDpos1-1));
-	  ID = std::stoi(name.substr(IDpos1,IDpos2-IDpos1));
-	  
-	  return 0;
-
-	}
-
 	void setCamID(int in){
-	  camID = in;
+		camID = in;
 	}
 
 	int getCamID(){
-	  return camID;
+		return camID;
 	}
 
 	void setID(int in){
@@ -85,14 +77,6 @@ public:
 
 	int getID(){
 		return ID;
-	}
-
-	void setSymID(int in){
-		symID = in;
-	}
-
-	int getSymID(){
-		return symID;
 	}
 
 	void setIMG(cv::Mat in){
@@ -114,26 +98,25 @@ public:
 		p.point.y = y;
 
 		p.fixPoint(rows,cols);
-
-		points.push_back(p);
+		features.push_back(p);
 	}
 
-	int getPointsSize(){
-		return (int)points.size();
+	int getFeaturesSize(){
+		return (int)features.size();
 	}
 
-	cv::Point2f getPoint(int in){
-		return points[in].point;
+	cv::Point2f getFeature(int in){
+		return features[in].point;
 	}
 
 	int getFeatureID(int in){
-		return points[in].FID;
+		return features[in].FID;
 	}
 
-	cv::Point2f getPointID(int in){
-		for(int i=0;i<points.size();i++){
-			if(points[i].FID == in){
-				return points[i].point;
+	cv::Point2f getFeaturebyID(int in){
+		for(int i=0;i<features.size();i++){
+			if(features[i].FID == in){
+				return features[i].point;
 			}
 		}
 
@@ -141,8 +124,8 @@ public:
 	}
 
 	bool isHaveFeature(int in){
-		for(int i=0;i<points.size();i++){
-			if(points[i].FID == in){
+		for(int i=0;i<features.size();i++){
+			if(features[i].FID == in){
 				
 				//std::cout << "points[i].FID:" << points[i].FID << " in:" << in << std::endl;
 				return true;
@@ -152,7 +135,7 @@ public:
 	}
 
 	int getFeatureFlags(ImageKeeper ik,std::vector<bool> &flags){
-		for(int j=0;j<ik.getPointsSize();j++){
+		for(int j=0;j<ik.getFeaturesSize();j++){
 			if(isHaveFeature(ik.getFeatureID(j)) == true){
 				flags[j] = true;
 			}else{
@@ -161,36 +144,11 @@ public:
 			}
 		}
 
-		return 1;
+		return 0;
 	}
 
-	void showPointsSize(){
-		std::cout  << "size:" << points.size() << std::endl;
-	}
-
-	cv::Mat showAllData(){
-		std::cout << "No:" << ID << std::endl << "Name:" << name << std::endl<<std::endl;
-		//showFeatures();
-
-		return img;
-	}
-
-	void showFeatures(){
-		std::vector<Feature>::iterator it = points.begin();
-
-		for(int i=0;i<points.size();i++){
-			std::cout << "FID;" << points[i].FID << " x:" << points[i].point.x << " y:" << points[i].point.y << std::endl; 
-		}
-	}
-
-	void showFeatureIndex(){
-		for(int i=0;i<points.size();i++){
-			std::cout << "FeatureIndex:" << points[i].FeatureIndex << std::endl;
-		}
-	}
-
-	void setFeatureIndex(int i,int input){
-		points[i].FeatureIndex = input;
+	void showFeaturesSize(){
+		std::cout  << "size:" << features.size() << std::endl;
 	}
 
 	int getCols(){

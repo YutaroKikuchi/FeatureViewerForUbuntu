@@ -25,6 +25,7 @@ private:
 	bool isEnd(int size,int presize);
 	void getPoints();
 	void getnumofImage(std::string in, std::string delim);
+	void getFeatureData(std::string in,std::string delim, std::vector<std::string> &FeatureData);
 	std::vector<std::string> FeatureData;
 	int getImgNum(std::string in);
 public:
@@ -46,174 +47,97 @@ public:
 		prevID = 0;
 	}
 
-	void setImg(int startline, int endline){
-	  std::ifstream ifs(nvmpass.c_str());
-	  std::string buff;
-	  ImageKeeper imbuff;
-	  
-	  prevID = currentID;
+	void setImg(int startline, int endline){	//引数で指定したnvmファイルの部分を読み込む
+		std::ifstream ifs(nvmpass.c_str());
+		std::string buff;
+		ImageKeeper imbuff;
 
-	  if(ifs.fail()){
-	    std::cout << "ERROR" << std::endl;
-	  }else{
-	    int lineno = 0;
-	    //cv::namedWindow("video",CV_WINDOW_AUTOSIZE);
-	    while(std::getline(ifs,buff)){
-	      lineno++;
-	      if(lineno >= startline && lineno<=endline){
-		std::string name = getfileName(buff);
-		
-		//std::cout << currentID << std::endl;
-		
-		//if(currentID % 1 == 0)
-		  //std::cout << name << std::endl;
+		prevID = currentID;
 
-		imbuff.setName(name);
-		imbuff.setIDbyName();
-		ik.push_back(imbuff);
-		ik[currentID].setIMG(cv::imread(imgpass+imbuff.getName(),1));
-		imgLink.push_back(imbuff.getID());
-
-		currentID++;
-	      }
-				
-	    }
-		
-	  }
-
-	  std::sort(imgLink.begin(),imgLink.end());
-
-		/*
 		if(ifs.fail()){
 			std::cout << "ERROR" << std::endl;
 		}else{
 			int lineno = 0;
-			int ID = 0;
-			while(std::getline(ifs,buff)){
-				lineno++;
 
-				if(lineno >= startline && lineno<=endline){
-					std::string name = getfileName(buff);
-					int num = getImgNum(name);
+			while(std::getline(ifs,buff)){		//最初の行から1行ずつ文字列を読み込む
+				lineno++;			//読み込むごとに行数をカウントする
 
-					ik[ID].setID(num);
-					ik[ID].setName(name);
-					ik[ID].setIMG(cv::imread(imgpass+name,1));
+				if(lineno >= startline && lineno <= endline){	//行数が引数で定義した領域内にあったら，画像ファイルを読み込む
+					std::string name = getfileName(buff);	//画像ファイルの名前を取得
+					imbuff.setName(name);
+					imbuff.setIDbyName();
+					ik.push_back(imbuff);
+					ik[currentID].setIMG(cv::imread(imgpass+imbuff.getName(),1));
+					imgLink.push_back(imbuff.getID());	//imgLinkにIDを登録
 
-					ID++;
-				}
+					currentID++;
+		      		}
 				
 			}
-		}*/
+		}
 
+		std::sort(imgLink.begin(),imgLink.end());
 	}
 
-	void setLineNo(){
-	  std::ifstream ifs(nvmpass.c_str());
+	int setFeaturePoint(int startline,int endline){		//nvmファイルを指定した領域だけ読み込み，特徴点のデータとして格納する．
+
+		if(startline == endline){			//startline と endlineが等しい（指定された領域が存在しない）場合，関数を抜ける．
+			return -1;
+		}
+
+		std::ifstream ifs(nvmpass.c_str());
 		std::string buff;
 
+		std::cout << "setting FeaturePoints";
+		
 		if(ifs.fail()){
+			std::cout << "ERROR" << std::endl;
 		}else{
-			int currentline = 0,presize,size;
-			int areano = 0;
+			int lineno = 0;
+			while(std::getline(ifs,buff)){		//最初の行から1行ずつ文字列を読み込む
+				lineno++;			//読み込むごとに行数をカウントする
+				if((lineno >= startline && lineno<=endline) && (lineno%FREQ == 0)){ //行数が引数で定義した領域内にあったら，特徴点データを読み込む
+		
+					if(lineno % 1000 ==0){
+						std::cout << ".";
+					}
 
-			while(std::getline(ifs,buff)){
-				currentline++;
-				size = (int)buff.size();
+					std::vector<std::string> FeatureData;
 
-				if((currentline == 1)||(currentline == 2)){
-				}else if((isStart(size,presize)==true) && (isEnd(size,presize)==true)){
-				}else if((isStart(size,presize)==true) && !(isEnd(size,presize)==true) && (areano==0)){
-					startImg = currentline+1;
-				}else if(!(isStart(size,presize)==true) && (isEnd(size,presize)==true) && (areano==0)){
-					endImg = currentline-1;
-					areano++;
-				}else if((isStart(size,presize)==true) && !(isEnd(size,presize)==true) && (areano==1)){
-					startFeature = currentline+1;
-				}else if(!(isStart(size,presize)==true) && (isEnd(size,presize)==true) && (areano==1)){
-					endFeature = currentline-1;
-					areano++;
+					getFeatureData(buff, " ", FeatureData);			//特徴点データを取得
+					int NumImage = std::stoi(FeatureData[6]);	//int型として格納
+					//FeaturePoint hoge(currentFeatureID);
+					//featurePoints.push_back(hoge);
+
+					for(int i=0;i<NumImage;i++){
+						int ImageIndex;
+		  
+						if(prevID != 0){
+							ImageIndex = std::stoi(FeatureData[i*4+7]) + prevID;
+						}else{
+							ImageIndex = std::stoi(FeatureData[i*4+7]);
+						}
+
+						//int FeatureIndex = std::stoi(FeatureData[i*4+7+1]);
+						int FeatureID = currentFeatureID;	//特徴点にIDを割り振る
+						float xPoint = std::stof(FeatureData[i*4+7+2]);	//対象画像上のx座標を取得
+						float yPoint = std::stof(FeatureData[i*4+7+3]);	//対象画像上のy座標を取得
+		  
+						if(ImageIndex == 0){
+							//featureindex.push_back(FeatureIndex);
+						}
+
+						//featurePoints[currentFeatureID].setimgID(ImageIndex);
+		  
+						ik[ImageIndex].setFeature(FeatureID,xPoint,yPoint);	//対象画像に特徴点のIDとx,y座標を格納する
+					}
+		
+					currentFeatureID++;
 				}
-				presize = size;
 			}
+
+			std::cout << std::endl;
 		}
-	}
-
-	int setFeaturePoint(int startline,int endline){
-
-		//featurePoints.reserve(endline-startline+1);
-
-		if(endline - startline == 0)
-			return 0;
-
-	  std::ifstream ifs(nvmpass.c_str());
-	  std::string buff;
-
-	  std::cout << "setting FeaturePoints";
-
-	  ImageKeeper imbuff;
-	  if(ifs.fail()){
-	    std::cout << "ERROR" << std::endl;
-	  }else{
-	    int lineno = 0;
-	    while(std::getline(ifs,buff)){
-	      lineno++;
-	      if((lineno >= startline && lineno<=endline) && (lineno%FREQ == 0)){
-		
-		if(lineno % 1000 ==0)
-		  std::cout << ".";
-		//std::cout<< buff << std::endl;
-
-		getnumofImage(buff," ");
-		int NumImage = std::stoi(FeatureData[6]);
-		FeaturePoint hoge(currentFeatureID);
-		featurePoints.push_back(hoge);
-		//std::cout << "*******************************" << std::endl <<"ID:"<< featureID << std::endl;
-		//std::cout << "NumOfImage:"<<NumImage<<std::endl;
-		for(int i=0;i<NumImage;i++){
-		  int ImageIndex;
-		  
-		  if(prevID != 0){
-		    ImageIndex = std::stoi(FeatureData[i*4+7]) + prevID;
-		  }else{
-		    ImageIndex = std::stoi(FeatureData[i*4+7]);
-		  }
-		  
-		  int FeatureIndex = std::stoi(FeatureData[i*4+7+1]);
-		  int FeatureID = currentFeatureID;
-		  float xPoint = std::stof(FeatureData[i*4+7+2]);
-		  float yPoint = std::stof(FeatureData[i*4+7+3]);
-		  
-		  if(ImageIndex == 0){
-		    featureindex.push_back(FeatureIndex);
-		  }
-
-		  featurePoints[currentFeatureID].setimgID(ImageIndex);
-		  
-		  ik[ImageIndex].setFeature(FeatureID,xPoint,yPoint);
-		}
-		
-		currentFeatureID++;
-	      }
-	      
-	      FeatureData.clear();
-	      
-	    }
-	    
-	    std::cout << std::endl;
-	  }
-	}
-
-	ImageKeeper getIKbyID(int in){
-		for(int i=0;i<ik.size();i++){
-			if(ik[i].getID() == in){
-				return ik[i];
-			}
-		}
-
-		ImageKeeper ret;
-		ret.setID(-1);
-		return ret;
 	}
 
 	ImageKeeper getIKbyID(int cam,int in){
@@ -229,16 +153,6 @@ public:
 
 	}
 
-	int getIKIndexbyID(int in){
-		for(int i=0;i<ik.size();i++){
-			if(ik[i].getID() == in){
-				return i;
-			}
-		}
-
-		return -1;
-	}
-
 	void showFeatureData(std::string in){
 
 		getnumofImage(in," ");
@@ -247,63 +161,6 @@ public:
 
 		for(;it!=FeatureData.end();++it){
 			std::cout << *it << std::endl;
-		}
-	}
-
-	void testFeatureData(){
-
-		for(int i=0;i<10;i++){
-			std::cout << "ID:"<<featurePoints[i*100].getID() <<" imgID:" << featurePoints[i*100].getimgID(0)<<std::endl;
-		}
-	}
-
-	void showImgIndex(int startline,int endline){
-
-		featurePoints.reserve(endline-startline+1);
-
-		std::ifstream ifs(nvmpass);
-		std::string buff;
-
-		std::ofstream ofs("./imageindex.txt");
-
-		std::cout << "setting FeaturePoints";
-
-		ImageKeeper imbuff;
-		if(ifs.fail()){
-			std::cout << "ERROR" << std::endl;
-		}else{
-			int lineno = 0;
-			int featureID = 0;
-			while(std::getline(ifs,buff)){
-				lineno++;
-				if((lineno >= startline && lineno<=endline) && (lineno%FREQ == 0)){
-
-					if(lineno % 1000 ==0)
-						std::cout << ".";
-
-					getnumofImage(buff," ");
-					int NumImage = std::stoi(FeatureData[6]);
-					FeaturePoint hoge(featureID);
-					featurePoints.push_back(hoge);
-					for(int i=0;i<NumImage;i++){
-						int ImageIndex = std::stoi(FeatureData[i*4+7]);
-						int FeatureIndex = std::stoi(FeatureData[i*4+7+1]);
-						float xPoint = std::stof(FeatureData[i*4+7+2]);
-						float yPoint = std::stof(FeatureData[i*4+7+3]);
-
-						if(FeatureIndex == 1){
-							ofs << "image[" << ImageIndex << "]:{" << FeatureIndex << "}in " << lineno << std::endl;
-						}
-					}
-
-					featureID++;
-				}
-
-				FeatureData.clear();
-				
-			}
-
-			std::cout << std::endl;
 		}
 	}
 
@@ -335,7 +192,7 @@ bool Reader::isEnd(int size,int presize){
 	}
 }
 
-void Reader::getnumofImage(std::string in,std::string delim){
+void Reader::getFeatureData(std::string in,std::string delim, std::vector<std::string> &FeatureData){
 
 	size_t current = 0, found, delimlen = delim.size();
 

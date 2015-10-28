@@ -316,7 +316,7 @@ int main(int argc ,char* argv[]){
 		for(int j=0;j<cam;j++){
 
 			drawer.DrawPoints(drawnCam[j][0]);
-			flagCam[j].reserve(drawnCam[j][0].getPointsSize());
+			flagCam[j].reserve(drawnCam[j][0].getFeaturesSize());
 		}
 
 		for(int j=0;j<cam;j++){
@@ -367,7 +367,8 @@ int main(int argc ,char* argv[]){
 
 	Drawer drawer;
 
-	LineReader lr(NVM);
+	LineReader 
+lr(NVM);
 
 	lr.setLineNo();
 	lr.showLines();

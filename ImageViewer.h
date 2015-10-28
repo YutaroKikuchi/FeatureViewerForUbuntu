@@ -366,15 +366,15 @@ int ImageViewer::matchPoint(ImageKeeper from,ImageKeeper to,std::vector<cv::Poin
 
   //std::cout << " start MatchPoint" << std::endl;
 
-	for(int i=0;i<from.getPointsSize();i++){
+	for(int i=0;i<from.getFeaturesSize();i++){
 		int fromFID = from.getFeatureID(i);
-		cv::Point2f point = to.getPointID(fromFID);
+		cv::Point2f point = to.getFeaturebyID(fromFID);
 
 		//std::cout << "  getPointID(" << fromFID << ");" << std::endl;
 		//std::cout << "  point = " << point << std::endl;
 
 		if(point != cv::Point2f(0.0,0.0)){
-			frompoints.push_back(from.getPointID(fromFID));
+			frompoints.push_back(from.getFeaturebyID(fromFID));
 			topoints.push_back(point);
 		}
 	}
