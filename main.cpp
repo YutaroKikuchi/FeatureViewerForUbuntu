@@ -57,6 +57,57 @@ int readPath(char* in, std::string *imgpath, std::string *nvmpath,int *cam, int 
 
 /*
 int main(){
+
+	if(false){
+		std::cout << "Invalid Argument !!!" << std::endl;
+		return 0;
+	}
+
+	std::string nvmpath;
+	std::string imgpath;
+	int lengh,cam;
+
+	if(readPath("./input.txt",&imgpath,&nvmpath,&cam,&lengh)==0){
+		return 0;
+	}
+
+	int numpic=0;
+
+	ImageViewer imgv(cam,lengh);
+	Reader reader(cam,imgpath,nvmpath);
+
+	Drawer drawer;
+
+	LineReader lr(nvmpath);
+
+	lr.setLineNo();
+	lr.showLines();
+
+	for(int i=0;i<lr.endFeature.size();i++){
+		reader.setImg(lr.startImg[i],lr.endImg[i]);
+		reader.setFeaturePoint(lr.startFeature[i],lr.endFeature[i]);
+	}
+
+	for(int i=0;i<lr.endFeature.size();i++){
+		numpic += lr.endImg[i] - lr.startImg[i] + 1;
+	}
+
+	std::cout << "Num of Imgs:" << numpic << std::endl;
+
+	cv::namedWindow("hoge",CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
+
+	for(int i=0;i<numpic;i++){
+		
+		std::cout << "ImageIndex:" <<i<< " name:" << reader.ik[i].getName() << std::endl;
+		drawer.DrawPoints(reader.ik[i]);
+		cv::imshow("hoge",reader.ik[i].getIMG());
+		cv::waitKey(0);
+	}	
+}
+*/
+
+/*
+int main(){
 	ImageViewer imgv(12,4);
 
 	std::vector<ImageKeeper> lena(12);
@@ -186,7 +237,7 @@ int main(){
 
 int main(int argc ,char* argv[]){
 
-	if(false){
+	if(argc != 2){
 		std::cout << "Invalid Argument !!!" << std::endl;
 		return 0;
 	}
@@ -195,7 +246,7 @@ int main(int argc ,char* argv[]){
 	std::string imgpath;
 	int lengh,cam;
 
-	if(readPath("./input.txt",&imgpath,&nvmpath,&cam,&lengh)==0){
+	if(readPath(argv[1],&imgpath,&nvmpath,&cam,&lengh)==0){
 		return 0;
 	}
 
@@ -279,6 +330,8 @@ int main(int argc ,char* argv[]){
 		std::cout << "Cam1.name:" << viewedimg[j].getName() << std::endl;
 	}
 */
+
+
 
 		imgv.showImgsTheta(viewedimg.begin(),viewedimg.end(),preimg.begin(),preimg.end());
 
