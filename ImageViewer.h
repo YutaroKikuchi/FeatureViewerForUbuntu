@@ -13,23 +13,27 @@ class ImageViewer{
 private:
 	int numCam;
 	int lengh;
+	std::string windowName;
 
 	int combineImgTheta(std::vector<ImageKeeper> &imgs, cv::Mat out);
 	int DrawLinesTheta(std::vector<ImageKeeper> &imgs, std::vector<ImageKeeper> &preimgs, cv::Mat out);
 	int matchPoint(ImageKeeper from, ImageKeeper to, std::vector<cv::Point2f> &frompoints, std::vector<cv::Point2f> &topoints);
 
 public:
-	ImageViewer(int numcam,int len){
+	ImageViewer(int numcam,int len, std::string windowname){
 		numCam = numcam;
 		lengh = len;
+		windowName = windowname;
 	}
 
 	void setWindow();
 	int showImgsTheta(std::vector<ImageKeeper> &imgs, std::vector<ImageKeeper> &preimgs);
 };
 
+
+
 void ImageViewer::setWindow(){
-	cv::namedWindow("hoge",CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
+	cv::namedWindow(windowName,CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
 }
 
 int ImageViewer::showImgsTheta(std::vector<ImageKeeper> &imgs, std::vector<ImageKeeper> &preimgs){
@@ -40,7 +44,7 @@ int ImageViewer::showImgsTheta(std::vector<ImageKeeper> &imgs, std::vector<Image
 
 	DrawLinesTheta(imgs, preimgs, output);
 
-	cv::imshow("hoge",output);
+	cv::imshow(windowName,output);
 	return 0;
 }
 
