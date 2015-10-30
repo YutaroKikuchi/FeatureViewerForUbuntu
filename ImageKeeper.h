@@ -41,88 +41,27 @@ public:
 		cols = image.cols;
 	}
 
-	int setIDbyName(){
+	
+	void setName(std::string in);	// nameのsetter
+	std::string getName();		// nameのgetter
 
-		size_t camIDpos1 = name.find("-");
-		size_t camIDpos2 = name.rfind(".");
+	void setCamID(int in);		// camIDのsetter
+	int getCamID();			// camIDのgetter
 
-		size_t IDpos1 = 0;
-		size_t IDpos2 = camIDpos1;
+	void setID(int in);		// IDのsetter
+	int setIDbyName();		// nameを用いたIDのsetter
+	int getID();			// IDのgetter
 
-		camID = std::stoi(name.substr(camIDpos1+1,camIDpos2-camIDpos1-1));
-		ID = std::stoi(name.substr(IDpos1,IDpos2-IDpos1));
-	  
-		return 0;
-	}
+	void setIMG(cv::Mat in);	// imgのsetter
+	cv::Mat getIMG();		// imgのgetter
 
-	void setName(std::string in){
-		name = in;
-	}
+	void setFeature(int id,float x, float y);	//Featureのsetter
+	cv::Point2f getFeature(int in);			//Featureの座標のgetter
+	int getFeatureID(int in);			//FeatureのIDのgetter
+	cv::Point2f getFeaturebyID(int in);		//FeatureのIDを使った座標のgetter
+	int getFeaturesSize();				//Featureのvectorのサイズを返す．
 
-	std::string getName(){
-		return name;
-	}
-
-	void setCamID(int in){
-		camID = in;
-	}
-
-	int getCamID(){
-		return camID;
-	}
-
-	void setID(int in){
-		ID = in;
-	}
-
-	int getID(){
-		return ID;
-	}
-
-	void setIMG(cv::Mat in){
-		in.copyTo(img);
-
-		rows = img.rows;
-		cols = img.cols;
-	}
-
-	cv::Mat getIMG(){
-		return img;
-	}
-
-	void setFeature(int id,float x, float y){
-		Feature p;
-
-		p.FID=id;
-		p.point.x = x;
-		p.point.y = y;
-
-		p.fixPoint(rows,cols);
-		features.push_back(p);
-	}
-
-	int getFeaturesSize(){
-		return (int)features.size();
-	}
-
-	cv::Point2f getFeature(int in){
-		return features[in].point;
-	}
-
-	int getFeatureID(int in){
-		return features[in].FID;
-	}
-
-	cv::Point2f getFeaturebyID(int in){
-		for(int i=0;i<features.size();i++){
-			if(features[i].FID == in){
-				return features[i].point;
-			}
-		}
-
-		return cv::Point2f(0.0,0.0);
-	}
-
+/*
 	bool isHaveFeature(int in){
 		for(int i=0;i<features.size();i++){
 			if(features[i].FID == in){
@@ -133,10 +72,11 @@ public:
 		}
 		return false;
 	}
+*/
 
 	int getFeatureFlags(ImageKeeper ik,std::vector<bool> &flags){
 		for(int j=0;j<ik.getFeaturesSize();j++){
-			if(isHaveFeature(ik.getFeatureID(j)) == true){
+			if(getFeaturebyID(ik.getFeatureID(j)) == cv::Point2f(0.0,0.0)){
 				flags[j] = true;
 			}else{
 				if(flags[j] != true)
@@ -160,6 +100,85 @@ public:
 	}
 };
 
+int ImageKeeper::setIDbyName(){
+	size_t camIDpos1 = name.find("-");
+	size_t camIDpos2 = name.rfind(".");
+	size_t IDpos1 = 0;
+	size_t IDpos2 = camIDpos1;
+
+	camID = std::stoi(name.substr(camIDpos1+1,camIDpos2-camIDpos1-1));
+	ID = std::stoi(name.substr(IDpos1,IDpos2-IDpos1));
+	  
+	return 0;
+}
+
+void ImageKeeper::setName(std::string in){
+	name = in;
+}
+
+std::string ImageKeeper::getName(){
+	return name;
+}
+
+void ImageKeeper::setCamID(int in){
+	camID = in;
+}
+
+int ImageKeeper::getCamID(){
+	return camID;
+}
+
+void ImageKeeper::setID(int in){
+	ID = in;
+}
+
+int ImageKeeper::getID(){
+	return ID;
+}
+
+void ImageKeeper::setIMG(cv::Mat in){
+	in.copyTo(img);
+
+	rows = img.rows;
+	cols = img.cols;
+}
+
+cv::Mat ImageKeeper::getIMG(){
+	return img;
+}
+
+void ImageKeeper::setFeature(int id,float x, float y){
+	Feature p;
+
+	p.FID=id;
+	p.point.x = x;
+	p.point.y = y;
+
+	p.fixPoint(rows,cols);
+	features.push_back(p);
+}
+
+int ImageKeeper::getFeaturesSize(){
+	return (int)features.size();
+}
+
+cv::Point2f ImageKeeper::getFeature(int in){
+	return features[in].point;
+}
+
+int ImageKeeper::getFeatureID(int in){
+	return features[in].FID;
+}
+
+cv::Point2f ImageKeeper::getFeaturebyID(int in){
+	for(int i=0;i<features.size();i++){
+		if(features[i].FID == in){
+			return features[i].point;
+		}
+	}
+
+	return cv::Point2f(0.0,0.0);
+}
 
 
 #endif
