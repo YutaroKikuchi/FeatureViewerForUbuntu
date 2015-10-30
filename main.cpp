@@ -12,7 +12,6 @@
 #include "FeatureViewer.h"
 #include "ImageViewer.h"
 
-#define LGH 4
 #define CAM 2
 
 #define W 480
@@ -328,7 +327,7 @@ int main(int argc ,char* argv[]){
 		}
 
 		for(int j=0;j<cam;j++){
-			drawer.DrawRoute(drawnCam[j].begin(),drawnCam[j].end(),drawnCam[j][0].getIMG(),flagCam[j]);
+			drawer.DrawRoute(drawnCam[j],drawnCam[j][0].getIMG(),flagCam[j]);
 		}
 
 		std::vector<ImageKeeper> preimg;
