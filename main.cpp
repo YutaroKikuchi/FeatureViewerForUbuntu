@@ -67,6 +67,79 @@ int readPath(char* in, std::string *imgpath, std::string *nvmpath,int *cam, int 
 	return 1;
 }
 
+void showData(std::vector<ImageKeeper> &viewed){
+
+	for(int i=0; i<3; i++){
+		for(int j=0; j<6; j++){
+			std::string shownStr;
+			int numModel;
+
+			switch(i){
+				case 0:
+					switch(j){
+						case 0:
+							shownStr = viewed[5].getName();
+							break;
+						case 1:
+							shownStr = viewed[4].getName();
+							break;
+						case 3:
+							shownStr = viewed[10].getName();
+							break;
+						case 4:
+							shownStr = viewed[11].getName();
+							break;
+						default:
+							shownStr = "No Image";
+					}
+					break;
+				case 1:
+					switch(j){
+						case 0:
+							shownStr = viewed[3].getName();
+							break;
+						case 1:
+							shownStr = viewed[0].getName();
+							break;
+						case 2:
+							shownStr = viewed[1].getName();
+							break;
+						case 3:
+							shownStr = viewed[9].getName();
+							break;
+						case 4:
+							shownStr = viewed[6].getName();
+							break;
+						case 5:
+							shownStr = viewed[7].getName();
+							break;
+						default:
+							shownStr = "No Image";
+					}
+					break;
+				case 2:
+					switch(j){
+						case 1:
+							shownStr = viewed[2].getName();
+							break;
+						case 4:
+							shownStr = viewed[8].getName();
+							break;
+						default:
+							shownStr = "No Image";
+							
+					}
+					break;
+				default:
+					break;
+			}
+
+			std::cout << "|" << shownStr << "\t|"; 
+		}
+		std::cout << std::endl << "-------------------------------------------------------------------------------------------------------------" << std::endl;
+	}
+	std::cout << std::endl;
+}
 /*
 int main(){
 
@@ -272,7 +345,7 @@ int main(int argc ,char* argv[]){
 	LineReader lr(nvmpath);
 
 	lr.setLineNo();
-	lr.showLines();
+	lr.showModel();
 
 	for(int i=0;i<lr.endFeature.size();i++){
 		reader.setImg(lr.startImg[i],lr.endImg[i]);
@@ -284,8 +357,6 @@ int main(int argc ,char* argv[]){
 	}
 
 	std::cout << "Num of Imgs:" << numpic << std::endl;
-
-	std::cout << "Name:" << reader.ik[lengh].getName() << " Row:" << reader.ik[lengh].getRows() << " Col" << reader.ik[lengh].getCols() << std::endl;
 
 	cv::namedWindow("hoge",CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
 
@@ -342,10 +413,9 @@ int main(int argc ,char* argv[]){
 		std::cout << "Cam1.name:" << viewedimg[j].getName() << std::endl;
 	}
 */
+		showData(viewedimg);
 
-
-
-		imgv.showImgsTheta(viewedimg.begin(),viewedimg.end(),preimg.begin(),preimg.end());
+		imgv.showImgsTheta(viewedimg, preimg);
 
 		checkCommand(&i,cv::waitKey(0));
 	}
