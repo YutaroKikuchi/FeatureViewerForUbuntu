@@ -70,63 +70,79 @@ int readPath(char* in, std::string *imgpath, std::string *nvmpath,int *cam, int 
 void showData(std::vector<ImageKeeper> &viewed){
 
 	for(int i=0; i<3; i++){
+
+		std::vector<std::string> shownStr(6);
+		std::vector<int> numModel(6);
 		for(int j=0; j<6; j++){
-			std::string shownStr;
-			int numModel;
 
 			switch(i){
 				case 0:
 					switch(j){
 						case 0:
-							shownStr = viewed[5].getName();
+							shownStr[j] = viewed[5].getName();
+							numModel[j] = viewed[5].getModelID();
 							break;
 						case 1:
-							shownStr = viewed[4].getName();
+							shownStr[j] = viewed[4].getName();
+							numModel[j] = viewed[4].getModelID();
 							break;
 						case 3:
-							shownStr = viewed[10].getName();
+							shownStr[j] = viewed[10].getName();
+							numModel[j] = viewed[10].getModelID();
 							break;
 						case 4:
-							shownStr = viewed[11].getName();
+							shownStr[j] = viewed[11].getName();
+							numModel[j] = viewed[11].getModelID();
 							break;
 						default:
-							shownStr = "No Image";
+							shownStr[j] = "No Image";
+							numModel[j] = -1;
 					}
 					break;
 				case 1:
 					switch(j){
 						case 0:
-							shownStr = viewed[3].getName();
+							shownStr[j] = viewed[3].getName();
+							numModel[j] = viewed[3].getModelID();
 							break;
 						case 1:
-							shownStr = viewed[0].getName();
+							shownStr[j] = viewed[0].getName();
+							numModel[j] = viewed[0].getModelID();
 							break;
 						case 2:
-							shownStr = viewed[1].getName();
+							shownStr[j] = viewed[1].getName();
+							numModel[j] = viewed[1].getModelID();
 							break;
 						case 3:
-							shownStr = viewed[9].getName();
+							shownStr[j] = viewed[9].getName();
+							numModel[j] = viewed[9].getModelID();
 							break;
 						case 4:
-							shownStr = viewed[6].getName();
+							shownStr[j] = viewed[6].getName();
+							numModel[j] = viewed[6].getModelID();
 							break;
 						case 5:
-							shownStr = viewed[7].getName();
+							shownStr[j] = viewed[7].getName();
+							numModel[j] = viewed[7].getModelID();
 							break;
 						default:
-							shownStr = "No Image";
+							shownStr[j] = "No Image";
+							numModel[j] = -1;
 					}
 					break;
 				case 2:
 					switch(j){
 						case 1:
-							shownStr = viewed[2].getName();
+							shownStr[j] = viewed[2].getName();
+							numModel[j] = viewed[2].getModelID();
 							break;
 						case 4:
-							shownStr = viewed[8].getName();
+							shownStr[j] = viewed[8].getName();
+							numModel[j] = viewed[8].getModelID();
 							break;
 						default:
-							shownStr = "No Image";
+							shownStr[j] = "No Image";
+							numModel[j] = -1;
 							
 					}
 					break;
@@ -134,9 +150,16 @@ void showData(std::vector<ImageKeeper> &viewed){
 					break;
 			}
 
-			std::cout << "|" << shownStr << "\t|"; 
 		}
-		std::cout << std::endl << "-------------------------------------------------------------------------------------------------------------" << std::endl;
+
+		for(int j=0; j < 6; j++){
+			std::cout << "|" << shownStr[j] << "\t|";
+		}
+		std::cout << std::endl;
+		for(int j=0; j < 6; j++){
+			std::cout << "|" << "Model:" << numModel[j] << "\t|";
+		}
+		std::cout << std::endl << "-------------------------------------------------------------------------------------------------" << std::endl;
 	}
 	std::cout << std::endl;
 }
@@ -337,7 +360,7 @@ int main(int argc ,char* argv[]){
 
 	int numpic=0;
 
-	ImageViewer imgv(cam,lengh);
+	ImageViewer imgv(cam,lengh, "hoge");
 	Reader reader(cam,imgpath,nvmpath);
 
 	Drawer drawer;
@@ -376,7 +399,7 @@ int main(int argc ,char* argv[]){
 
 		for(int j=0;j<cam;j++){
 			if(drawnCam[j][0].getID() == -1){
-				ImageKeeper buff(-1,0,"No Image",cv::Mat::zeros(H,W,CV_8UC3));
+				ImageKeeper buff(-1,0,-1,"No Image",cv::Mat::zeros(H,W,CV_8UC3));
 				drawnCam[j][0] = buff;
 			}
 		} 
