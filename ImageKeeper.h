@@ -22,6 +22,7 @@ private:
 	cv::Mat img;
 	int camID;
 	int ID;
+	int ModelID;
 	std::string name;
 	std::vector<Feature> features;
 	int rows,cols;
@@ -30,10 +31,11 @@ public:
 	ImageKeeper(){
 	}
 
-	ImageKeeper(int id,int camid,std::string Name,cv::Mat image){
+	ImageKeeper(int id,int camid,int modelid,std::string Name,cv::Mat image){
 
 		ID = id;
 		camID = camid;
+		ModelID = modelid;
 		name = Name;
 		img = image;
 
@@ -51,6 +53,9 @@ public:
 	void setID(int in);		// IDのsetter
 	int setIDbyName();		// nameを用いたIDのsetter
 	int getID();			// IDのgetter
+
+	void setModelID(int modelid);	//ModelIDのsetter
+	int getModelID();		//ModelIDのgetter
 
 	void setIMG(cv::Mat in);	// imgのsetter
 	cv::Mat getIMG();		// imgのgetter
@@ -134,6 +139,14 @@ void ImageKeeper::setID(int in){
 
 int ImageKeeper::getID(){
 	return ID;
+}
+
+void ImageKeeper::setModelID(int modelid){
+	ModelID = modelid;
+}
+
+int ImageKeeper::getModelID(){
+	return ModelID;
 }
 
 void ImageKeeper::setIMG(cv::Mat in){
