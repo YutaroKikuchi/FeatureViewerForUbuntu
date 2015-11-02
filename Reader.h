@@ -17,6 +17,7 @@ private:
 	unsigned long int currentID;
 	unsigned long int prevID;
 	unsigned long int currentFeatureID;
+	int numofModel;
 
 	std::string imgpass;
 	std::string nvmpass;
@@ -36,6 +37,7 @@ public:
 		currentID =0;
 		currentFeatureID = 0;
 		prevID = 0;
+		numofModel = 0;
 	}
 
 	void setImg(int startline, int endline);	//nvmファイルを指定した領域だけ読み込み，画像のデータとして格納する．
@@ -63,6 +65,7 @@ void Reader::setImg(int startline, int endline){	//引数で指定したnvmフ�
 				std::string name = getfileName(buff);	//画像ファイルの名前を取得
 				imbuff.setName(name);
 				imbuff.setIDbyName();
+				imbuff.setModelID(numofModel);
 				ik.push_back(imbuff);
 				ik[currentID].setIMG(cv::imread(imgpass+imbuff.getName(),1));
 				
@@ -70,6 +73,8 @@ void Reader::setImg(int startline, int endline){	//引数で指定したnvmフ�
 	      		}
 				
 		}
+
+		numofModel++;
 	}
 }
 
