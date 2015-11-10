@@ -2,19 +2,7 @@
 #define IMAGEKEEPER
 
 #include<string>
-
-class Feature{
-
-public:
-	int FID;
-	int FeatureIndex;
-	cv::Point2f point;
-
-	void fixPoint(int rows,int cols){
-		point.x = point.x+cols/2;
-		point.y = rows/2-point.y;
-	}
-};
+#include "Feature.h"
 
 class ImageKeeper{
 
@@ -66,42 +54,14 @@ public:
 	cv::Point2f getFeaturebyID(int in);		//FeatureのIDを使った座標のgetter
 	int getFeaturesSize();				//Featureのvectorのサイズを返す．
 
-/*
-	bool isHaveFeature(int in){
-		for(int i=0;i<features.size();i++){
-			if(features[i].FID == in){
-				
-				//std::cout << "points[i].FID:" << points[i].FID << " in:" << in << std::endl;
-				return true;
-			}
-		}
-		return false;
-	}
-*/
+	int getCols();			//Colsのgetter
+	int getRows();			//Rowsのgetter
 
-	int getFeatureFlags(ImageKeeper ik,std::vector<bool> &flags){
-		for(int j=0;j<ik.getFeaturesSize();j++){
-			if(getFeaturebyID(ik.getFeatureID(j)) == cv::Point2f(0.0,0.0)){
-				flags[j] = true;
-			}else{
-				if(flags[j] != true)
-					flags[j] = false;
-			}
-		}
 
-		return 0;
-	}
+	int getFeatureFlags(ImageKeeper ik,std::vector<bool> &flags);
 
 	void showFeaturesSize(){
 		std::cout  << "size:" << features.size() << std::endl;
-	}
-
-	int getCols(){
-		return cols;
-	}
-
-	int getRows(){
-		return rows;
 	}
 };
 
@@ -183,6 +143,14 @@ int ImageKeeper::getFeatureID(int in){
 	return features[in].FID;
 }
 
+int ImageKeeper::getCols(){
+	return cols;
+}
+
+int ImageKeeper::getRows(){
+	return rows;
+}
+
 cv::Point2f ImageKeeper::getFeaturebyID(int in){
 	for(int i=0;i<features.size();i++){
 		if(features[i].FID == in){
@@ -193,5 +161,15 @@ cv::Point2f ImageKeeper::getFeaturebyID(int in){
 	return cv::Point2f(0.0,0.0);
 }
 
-
+int ImageKeeper::getFeatureFlags(ImageKeeper ik,std::vector<bool> &flags){
+	for(int j=0;j<ik.getFeaturesSize();j++){
+		if(getFeaturebyID(ik.getFeatureID(j)) == cv::Point2f(0.0,0.0)){
+			flags[j] = true;
+		}else{
+			if(flags[j] != true)
+				flags[j] = false;
+		}
+	}
+	return 0;
+}
 #endif
