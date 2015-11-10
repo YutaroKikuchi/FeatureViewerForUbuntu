@@ -17,7 +17,7 @@ private:
 	unsigned long int currentID;
 	unsigned long int prevID;
 	unsigned long int currentFeatureID;
-	int numofModel;
+	int modelID;
 
 	std::string imgpass;
 	std::string nvmpass;
@@ -25,7 +25,7 @@ private:
 	std::vector<std::string> FeatureData;
 
 	std::string getfileName(std::string in);
-	void getFeatureData(std::string in,std::string delim, std::vector<std::string> &FeatureData);
+	void splitFeatureData(std::string in, std::vector<std::string> &FeatureData);
 public:
 	std::vector<ImageKeeper> ik;
 
@@ -37,7 +37,7 @@ public:
 		currentID =0;
 		currentFeatureID = 0;
 		prevID = 0;
-		numofModel = 0;
+		modelID = 0;
 	}
 
 	void setImg(int startline, int endline);	//nvmファイルを指定した領域だけ読み込み，画像のデータとして格納する．
@@ -65,7 +65,7 @@ void Reader::setImg(int startline, int endline){	//引数で指定したnvmフ�
 				std::string name = getfileName(buff);	//画像ファイルの名前を取得
 				imbuff.setName(name);
 				imbuff.setIDbyName();
-				imbuff.setModelID(numofModel);
+				imbuff.setModelID(modelID);
 				ik.push_back(imbuff);
 				ik[currentID].setIMG(cv::imread(imgpass+imbuff.getName(),1));
 				
@@ -74,7 +74,7 @@ void Reader::setImg(int startline, int endline){	//引数で指定したnvmフ�
 				
 		}
 
-		numofModel++;
+		modelID++;
 	}
 }
 
@@ -104,7 +104,7 @@ int Reader::setFeaturePoint(int startline,int endline){		//nvmファイルを指
 
 				std::vector<std::string> FeatureData;
 
-				getFeatureData(buff, " ", FeatureData);		//特徴点データを取得
+				splitFeatureData(buff, FeatureData);		//特徴点データを取得
 				int NumImage = std::stoi(FeatureData[6]);	//int型として格納
 				//FeaturePoint hoge(currentFeatureID);
 				//featurePoints.push_back(hoge);
@@ -113,25 +113,11 @@ int Reader::setFeaturePoint(int startline,int endline){		//nvmファイルを指
 					int ImageIndex;
 				
 					ImageIndex = std::stoi(FeatureData[i*4+7]) + prevID;
-/*
-		  
-					if(prevID != 0){
-						ImageIndex = std::stoi(FeatureData[i*4+7]) + prevID;
-					}else{
-						ImageIndex = std::stoi(FeatureData[i*4+7]);
-					}
-*/
 
-					//int FeatureIndex = std::stoi(FeatureData[i*4+7+1]);
 					int FeatureID = currentFeatureID;	//特徴点にIDを割り振る
 					float xPoint = std::stof(FeatureData[i*4+7+2]);	//対象画像上のx座標を取得
 					float yPoint = std::stof(FeatureData[i*4+7+3]);	//対象画像上のy座標を取得
 	  
-					if(ImageIndex == 0){
-						//featureindex.push_back(FeatureIndex);
-					}
-
-					//featurePoints[currentFeatureID].setimgID(ImageIndex);
 		  
 					ik[ImageIndex].setFeature(FeatureID,xPoint,yPoint);	//対象画像に特徴点のIDとx,y座標を格納する
 				}
@@ -168,8 +154,9 @@ std::string Reader::getfileName(std::string in){
 	return name;
 }
 
-void Reader::getFeatureData(std::string in,std::string delim, std::vector<std::string> &FeatureData){
+void Reader::splitFeatureData(std::string in, std::vector<std::string> &FeatureData){
 
+	std::string delim = " ";
 	size_t current = 0, found, delimlen = delim.size();
 
 	while((found = in.find(delim, current)) != std::string::npos){
