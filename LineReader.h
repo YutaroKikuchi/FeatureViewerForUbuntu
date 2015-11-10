@@ -100,4 +100,4 @@ bool LineReader::isEnd(int size,int presize){		//現在の行が，画像もし�
 	}
 }
 
-#endif LINEREADER
+#endif
