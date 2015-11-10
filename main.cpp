@@ -22,23 +22,34 @@
 #define IMG "./multicam/"
 
 
-void checkCommand(int* output,char key){
+void checkCommand(int* output,char key){	//キーコマンドを解析
 
-	if(key == 'n'){
-	}else if(key == 'p'){
-		*output -=2;
-	}else{
-		*output -= 1;
+	switch(key){
+		case 'n':
+		case 'N':
+			break;
+		case 'p':
+		case 'P':
+			*output -= 2;
+			break;
+		case 'q':
+		case 'Q':
+			exit(0);
+			break;
+		default :
+			*output -= 1;
+			break;
 	}
 }
 
-void readPath(char* in, std::string *imgpath, std::string *nvmpath,int *cam, int *lengh){
+int readPath(char* in, std::string *imgpath, std::string *nvmpath,int *cam, int *lengh){	//引数で渡したテキストファイルを読み込む
 
 	std::ifstream ifs(in);
 	std::string buff;
 
 	if(ifs.fail()){
-		std::cout << "File Not Found" << std::endl;
+		std::cout << "File Not Found:" << in << std::endl;
+		return 0;
 	}else{
 		while(std::getline(ifs,buff)){
 			if(strstr(buff.c_str(),"data_dir")){
@@ -63,6 +74,7 @@ void readPath(char* in, std::string *imgpath, std::string *nvmpath,int *cam, int
 		}
 	}
 
+	return 1;
 }
 
 void showData(std::vector<ImageKeeper> &viewed){
@@ -180,7 +192,7 @@ int main(int argc ,char* argv[]){
 
 	int numpic=0;
 
-	ImageViewer imgv(cam,lengh, "hoge");
+	ImageViewer imgv(cam,lengh, "FeatureViewer");
 	Reader reader(cam,imgpath,nvmpath);
 
 	Drawer drawer;
@@ -201,7 +213,7 @@ int main(int argc ,char* argv[]){
 
 	std::cout << "Num of Imgs:" << numpic << std::endl;
 
-	cv::namedWindow("hoge",CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO);
+	imgv.setWindow();
 
 	for(int i=lengh;i<(numpic/12+1);i++){
 
