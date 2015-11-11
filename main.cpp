@@ -7,9 +7,9 @@
 #include "ImageKeeper.h"
 #include "Drawer.h"
 #include "FeaturePoint.h"
-//#include "Reader.h"
+#include "Reader.h"
 #include "LineReader.h"
-#include "FeatureViewer.h"
+//#include "FeatureViewer.h"
 #include "ImageViewer.h"
 
 #define CAM 2

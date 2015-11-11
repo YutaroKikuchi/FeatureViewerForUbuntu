@@ -26,6 +26,7 @@ private:
 
 	std::string getfileName(std::string in);
 	void splitFeatureData(std::string in, std::vector<std::string> &FeatureData);
+	void separateFeatureData(std::vector<std::string> &FeatureData, int *numimage, std::vector<int> &imageIndex, std::vector<float> &xpoint, std::vector<float> &ypoint);
 public:
 	std::vector<ImageKeeper> ik;
 
@@ -103,23 +104,22 @@ int Reader::setFeaturePoint(int startline,int endline){		//nvmファイルを指
 				}
 
 				std::vector<std::string> FeatureData;
+				int NumImage;
+				std::vector<int> ImageIndex;
+				std::vector<float> xPoint,yPoint;
 
 				splitFeatureData(buff, FeatureData);		//特徴点データを取得
-				int NumImage = std::stoi(FeatureData[6]);	//int型として格納
+				separateFeatureData(FeatureData, &NumImage, ImageIndex, xPoint, yPoint);
+
+
 				//FeaturePoint hoge(currentFeatureID);
 				//featurePoints.push_back(hoge);
 
 				for(int i=0;i<NumImage;i++){
-					int ImageIndex;
 				
-					ImageIndex = std::stoi(FeatureData[i*4+7]) + prevID;
+					ImageIndex[i] += prevID;
 
-					int FeatureID = currentFeatureID;	//特徴点にIDを割り振る
-					float xPoint = std::stof(FeatureData[i*4+7+2]);	//対象画像上のx座標を取得
-					float yPoint = std::stof(FeatureData[i*4+7+3]);	//対象画像上のy座標を取得
-	  
-		  
-					ik[ImageIndex].setFeature(FeatureID,xPoint,yPoint);	//対象画像に特徴点のIDとx,y座標を格納する
+					ik[ImageIndex[i]].setFeature(currentFeatureID,xPoint[i],yPoint[i]);	//対象画像に特徴点のIDとx,y座標を格納する
 				}
 		
 				currentFeatureID++;
@@ -154,7 +154,9 @@ std::string Reader::getfileName(std::string in){
 	return name;
 }
 
-void Reader::splitFeatureData(std::string in, std::vector<std::string> &FeatureData){
+void Reader::splitFeatureData(std::string in, std::vector<std::string> &FeatureData){	//特徴点のデータをstringで取得
+											//FeatureData[0],[1],[2]はX,Y,Z [3]は画像の数
+											//[4]はFrameID [5]はCameraID [6],[7]はx,y座標
 
 	std::string delim = " ";
 	size_t current = 0, found, delimlen = delim.size();
@@ -166,6 +168,14 @@ void Reader::splitFeatureData(std::string in, std::vector<std::string> &FeatureD
 	FeatureData.push_back(std::string(in, current, in.size() - current));
 }
 
+void Reader::separateFeatureData(std::vector<std::string> &FeatureData, int *numimage, std::vector<int> &imageIndex, std::vector<float> &xpoint, std::vector<float> &ypoint){
 
+	*numimage = std::stoi(FeatureData[6]);
+	for(int i=0; i < *numimage; i++){
+		imageIndex.push_back(std::stoi(FeatureData[4 * i + 7]));
+		xpoint.push_back(std::stoi(FeatureData[4 * i + 9]));
+		ypoint.push_back(std::stoi(FeatureData[4 * i + 10]));
+	}
+}
 
 #endif
