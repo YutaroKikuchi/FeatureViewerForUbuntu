@@ -13,16 +13,6 @@
 //#include "FeatureViewer.h"
 #include "ImageViewer.h"
 
-#define CAM 2
-
-#define W 480
-#define H 480
-
-
-#define NVM "./multicam/nvm/passage6.nvm"
-#define IMG "./multicam/"
-
-
 void checkCommand(int* output,char key){	//キーコマンドを解析
 
 	switch(key){
@@ -43,7 +33,7 @@ void checkCommand(int* output,char key){	//キーコマンドを解析
 	}
 }
 
-int readPath(char* in, std::string *imgpath, std::string *nvmpath,int *cam, int *lengh, int *numofimg){	//引数で渡したテキストファイルを読み込む
+int readPath(char* in, std::string *imgpath, std::string *nvmpath,int *cam, int *lengh, int *numofimg, int *numofLine){	//引数で渡したテキストファイルを読み込む
 
 	std::ifstream ifs(in);
 	std::string buff;
@@ -76,6 +66,11 @@ int readPath(char* in, std::string *imgpath, std::string *nvmpath,int *cam, int 
 			if(strstr(buff.c_str(), "num_of_imgs")){
 				size_t pos1 = buff.find("\""), pos2 = buff.rfind("\"");
 				*numofimg = std::stoi(buff.substr(pos1 + 1, pos2 - pos1 - 1));
+			}
+
+			if(strstr(buff.c_str(), "num_of_lines")){
+				size_t pos1 = buff.find("\""), pos2 = buff.rfind("\"");
+				*numofLine = std::stoi(buff.substr(pos1 + 1, pos2 - pos1 - 1));
 			}
 		}
 	}
@@ -189,9 +184,9 @@ int main(int argc ,char* argv[]){
 
 	std::string nvmpath;
 	std::string imgpath;
-	int lengh,cam,numofimg;
+	int lengh,cam,numofimg,numofLines;
 
-	if(readPath(argv[1], &imgpath, &nvmpath, &cam, &lengh, &numofimg) == 0){
+	if(readPath(argv[1], &imgpath, &nvmpath, &cam, &lengh, &numofimg, &numofLines) == 0){
 		return 0;
 	}
 
@@ -199,8 +194,12 @@ int main(int argc ,char* argv[]){
 	std::cout << " * [p] key : Move to previous Frame" << std::endl;
 	std::cout << " * [q] key : Quit thie application" << std::endl << "****************************************" << std::endl<< std::endl;
 
-	std::cout << "imgpath:" << imgpath << std::endl;
-	std::cout << "nvmpath:" << nvmpath << std::endl;
+	std::cout << "　* imgpath:" << imgpath << std::endl;
+	std::cout << " * nvmpath:" << nvmpath << std::endl;
+	std::cout << "　* pertitition_number:" << cam << std::endl;
+	std::cout << " * rought_lengh:" << lengh << std::endl;
+	std::cout << "　* num_of_imgs:" << numofimg << std::endl;
+	std::cout << " * num_of_lines:" << numofLines << std::endl << std::endl;
 
 	int numpic=0;
 
@@ -209,7 +208,7 @@ int main(int argc ,char* argv[]){
 
 	Drawer drawer;
 
-	if(reader.setFeaturePoint(2,134000) != 0){
+	if(reader.setFeaturePoint(1,numofLines) != 0){
 		exit(0);
 	}
 

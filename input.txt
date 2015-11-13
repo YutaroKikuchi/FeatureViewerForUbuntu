@@ -1,5 +1,6 @@
 data_dir:"/home/yusan/LabActive/FeatureViewer/FeatureViewer/03_s_jpg/"
 nvm_dir: "/home/yusan/LabActive/FeatureViewer/FeatureViewer/traj_data_S03_mod_last.txt"
 pertition_number: "12"
-rought_lengh: "3"
+rought_lengh: "5"
 num_of_imgs: "1440"
+num_of_lines: "134000"
