@@ -183,7 +183,7 @@ void showData(std::vector<ImageKeeper> &viewed){
 int main(int argc ,char* argv[]){
 
 	if(argc != 2){
-		std::cout << "Invalid Argument !!!" << std::endl;
+		std::cout << "Usage:" << std::endl << "%s ./FeatureViewer input.txt";
 		return 0;
 	}
 
