@@ -63,6 +63,13 @@ public:
 	void showFeaturesSize(){
 		std::cout  << "size:" << features.size() << std::endl;
 	}
+
+	void showFeatures(){
+		for(int i=0; i<5; i++){
+			std::cout <<" FID:" << features[i].FID;
+		}
+		std::cout << std::endl;
+	}
 };
 
 int ImageKeeper::setIDbyName(){
@@ -162,12 +169,13 @@ cv::Point2f ImageKeeper::getFeaturebyID(int in){
 }
 
 int ImageKeeper::getFeatureFlags(ImageKeeper ik,std::vector<bool> &flags){
+
 	for(int j=0;j<ik.getFeaturesSize();j++){
 		if(getFeaturebyID(ik.getFeatureID(j)) == cv::Point2f(0.0,0.0)){
-			flags[j] = true;
+			flags[j] = false;
 		}else{
-			if(flags[j] != true)
-				flags[j] = false;
+			if(flags[j] != false)
+				flags[j] = true;
 		}
 	}
 	return 0;
