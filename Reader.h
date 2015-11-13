@@ -51,42 +51,11 @@ public:
 
 };
 
-/*
-void Reader::setImg(int startline, int endline){	//引数で指定したnvmファイルの部分を読み込む
-	std::ifstream ifs(nvmpass.c_str());
-	std::string buff;
-	ImageKeeper imbuff;
-
-	prevID = currentID;
-	if(ifs.fail()){
-		std::cout << "ERROR" << std::endl;
-	}else{
-		int lineno = 0;
-
-		while(std::getline(ifs,buff)){		//最初の行から1行ずつ文字列を読み込む
-			lineno++;			//読み込むごとに行数をカウントする
-
-			if(lineno >= startline && lineno <= endline){	//行数が引数で定義した領域内にあったら，画像ファイルを読み込む
-				std::string name = getfileName(buff);	//画像ファイルの名前を取得
-				imbuff.setName(name);
-				imbuff.setIDbyName();
-				imbuff.setModelID(modelID);
-				ik.push_back(imbuff);
-				ik[currentID].setIMG(cv::imread(imgpass+imbuff.getName(),1));
-				
-				currentID++;
-	      		}
-				
-		}
-
-		modelID++;
-	}
-}*/
-
 
 void Reader::setImg(int numofCam,int startImg, int endImg){
 
 
+	std::cout << " * Loading Images......" << std::endl << std::endl;
 	for(int i=startImg; i <= endImg; i++){
 		for(int j=0; j<numofCam; j++){
 			for(int k=0; k<ik.size(); k++){
@@ -129,77 +98,16 @@ void Reader::setImg(int numofCam,int startImg, int endImg){
 }
 
 
-/*
-void Reader::setImg(int numofCam,int startImg, int endImg){
-
-	clock_t start,end;
-
-	std::ofstream ofs("./test.txt");
-
-	int hoge = 0;
-	ik.resize(numofCam*(endImg-startImg));
-
-	for(int i=startImg; i < endImg; i++){
-
-		for(int j = 0; j < numofCam; j++){
-
-			std::string imgID;
-			if(i>=0 && i<10){
-				imgID = "000" + std::to_string(i);
-			}else if(i>=10 && i<100){
-				imgID = "00"+ std::to_string(i);
-			}else if(i>=100 && i<1000){
-				imgID = "0"+ std::to_string(i);
-			}else if(i>=1000 && i<10000){
-				imgID = std::to_string(i);
-			}else{
-				imgID = "xx";
-			}
-
-
-			std::string camID;
-			if(j>=0 && j<10){
-				camID = "0" + std::to_string(j);
-			}else if(j>=10 && j<100){
-				camID = std::to_string(j);
-			}else{
-				imgID = "xx";
-			}
-
-			std::string filename = imgID + "-" + camID + ".jpg";
-			std::cout << imgpass+filename << std::endl;
-
-			cv::Mat imgbuff = cv::imread(imgpass+filename,1);
-
-			start = clock();
-			if(imgbuff.rows > 0 && imgbuff.cols > 0){
-
-				ik[hoge] = ImageKeeper(i,j,0,filename,imgbuff);
-			}else{
-
-				ik[hoge] = ImageKeeper(i, j, 0, "XX", cv::Mat::zeros(480, 480, CV_8UC3));
-			}
-			end = clock();
-			//ofs << end-start << ",";
-
-			hoge++;
-		}
-		//ofs << std::endl;
-	}
-	
-}*/
-
-
 int Reader::setFeaturePoint(int startline,int endline){		//nvmファイルを指定した領域だけ読み込み，特徴点のデータとして格納する．
 
 	if(startline == endline){			//startline と endlineが等しい（指定された領域が存在しない）場合，関数を抜ける．
 		return -1;
 	}
 
+	std::cout << " * setting FeaturePoints......" << std::endl << std::endl;
+
 	std::ifstream ifs(nvmpass.c_str());
 	std::string buff;
-
-	std::cout << "setting FeaturePoints";
 		
 	if(ifs.fail()){
 		std::cout << "ERROR" << std::endl;
@@ -209,10 +117,6 @@ int Reader::setFeaturePoint(int startline,int endline){		//nvmファイルを指
 		while(std::getline(ifs,buff)){		//最初の行から1行ずつ文字列を読み込む
 			lineno++;			//読み込むごとに行数をカウントする
 			if((lineno >= startline && lineno<=endline) && (lineno%FREQ == 0)){ //行数が引数で定義した領域内にあったら，特徴点データを読み込む
-	
-				if(lineno % 1000 ==0){
-					std::cout << ".";
-				}
 
 				std::vector<std::string> FeatureData;
 				int NumImage;
