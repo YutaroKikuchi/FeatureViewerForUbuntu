@@ -219,33 +219,40 @@ int main(int argc ,char* argv[]){
 	reader.sortKeyFrameID();
 
 	imgv.setWindow();
+	
+	//全てのフレームに対してループを実行
 	for(int i=lengh+1; i<reader.ik.size();i++){
 		
 		std::vector<std::vector<ImageKeeper>> drawnCam(cam);
 
+		//表示したい12枚の画像を取得
 		for(int j=0; j<12; j++){
+			//指定された線の長さ分だけ、前フレームの画像を取得
 			for(int k=0; k<lengh+1;k++){
 				drawnCam[j].push_back(reader.getIKbyID(j,reader.keyFrameID[i-k]));
 			}
 		}
 
+		//featureFlagのベクトル
 		std::vector< std::vector<bool> > flagCam(cam);
 
-
+		//表示する画像に対してすべての点を描写
+		//flagのベクトルに特徴点の部分だけ割り当てる
 		for(int j=0;j<cam;j++){
 			drawer.DrawPoints(drawnCam[j][0]);
 			flagCam[j].resize(drawnCam[j][0].getFeaturesSize());
 
 		}
 
+		//表示する画像に対して、Featureflagを割り当てる
 		for(int j=0;j<cam;j++){
+			//1つ前の画像の特徴点同士のIDを比較
 			for(int k=0;k<cam;k++){
                			if(j!=k){
                     			drawnCam[k][1].getFeatureFlags(drawnCam[j][0],flagCam[j]);
                 		}
             		}
 		}
-
 
 		for(int j=0;j<cam;j++){
 			drawer.DrawRoute(drawnCam[j],drawnCam[j][0].getIMG(),flagCam[j]);
